@@ -63,5 +63,5 @@ async def get(id:int):
                  target_id=tid(todo.id), hx_swap="outerHTML")
     return Div(Div(todo.title), btn)
 
-if __name__ == '__main__': uvicorn.run("main:app", port=os.getenv("PORT", default=5000))
+if __name__ == '__main__': uvicorn.run("main:app", host='0.0.0.0', port=int(os.getenv("PORT", default=5000)))
 
