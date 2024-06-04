@@ -1,10 +1,7 @@
 from fasthtml.all import *
 import uvicorn
 
-path = Path('data')
-path.mkdir(exist_ok=True)
-db = Database(path/'todos.db')
-db.enable_wal()
+db = database('data/todos.db')
 todos = db.t.todos
 if todos not in db.t: todos.create(id=int, title=str, done=bool, pk='id')
 Todo = todos.dataclass()
@@ -63,5 +60,5 @@ async def get(id:int):
                  target_id=tid(todo.id), hx_swap="outerHTML")
     return Div(Div(todo.title), btn)
 
-if __name__ == '__main__': uvicorn.run("main:app", host='0.0.0.0', port=int(os.getenv("PORT", default=5000)))
+if __name__ == '__main__': uvicorn.run("main:app", host='0.0.0.0', port=int(os.getenv("PORT", default=5001)))
 
