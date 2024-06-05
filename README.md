@@ -1,2 +1,3 @@
 # fasthtml-example
-Example fasthtml app
+
+Example fasthtml apps
