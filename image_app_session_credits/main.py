@@ -38,7 +38,7 @@ async def get(session):
     gen_containers = [generation_preview(g, session) for g in gens(limit=10, where=f"session_id == '{session['session_id']}'")]
     gen_list = Div(*gen_containers[::-1], id='gen-list', cls="row") # flexbox container: class = row
     return Title('Image Generation Demo'), Main(
-        H1('Magic Image 2'), 
+        H1('Image Generation Demo (Sessions, Credits)'), 
         P("Hello", str(session)), 
         get_balance(),  # Live-updating balance
         P(A("Buy 50 more", href="/buy_global"), " to share ($5)"),
@@ -74,7 +74,7 @@ async def get(id:int, session):
 def get_balance():
   return Div(P(f"Global balance: {global_balance}"),
              id='balance', hx_get="/balance",
-             hx_trigger="every 2s", hx_swap="outerHTML", hx_swap_oob='true')
+             hx_trigger="every 2s", hx_swap="outerHTML")
 
 # For images, CSS, etc.
 @app.get("/{fname:path}.{ext:static}")
@@ -109,7 +109,7 @@ def post(prompt: str, session):
                     session_id=session['session_id']))
     generate_and_save(g.prompt, g.id, g.folder)
 
-    return generation_preview(g, session), clear_input, get_balance()
+    return generation_preview(g, session), clear_input
 
 # Generate an image and save it to the folder (in a separate thread)
 @threaded

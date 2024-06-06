@@ -30,7 +30,7 @@ async def get(session):
     gen_containers = [generation_preview(g) for g in gens(limit=10, where=f"session_id == '{session['session_id']}'")]
     gen_list = Div(*gen_containers[::-1], id='gen-list', cls="row") # flexbox container: class = row
     return Title('Image Generation Demo'), Main(
-        H1('Magic Image 2'), 
+        H1('Image Gen: Sessions'), 
         P("Hello", str(session)), 
         add, gen_list, cls='container')
 
