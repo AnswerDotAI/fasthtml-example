@@ -5,3 +5,4 @@ sqlite-utils
 requests
 replicate
 pillow
+stripe
