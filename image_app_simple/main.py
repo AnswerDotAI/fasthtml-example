@@ -24,7 +24,7 @@ app = FastHTML(hdrs=(picolink, gridlink))
 
 # Main page
 @app.get("/")
-async def get():
+def home():
     inp = Input(id="new-prompt", name="prompt", placeholder="Enter a prompt")
     add = Form(Group(inp, Button("Generate")), hx_post="/", target_id='gen-list', hx_swap="afterbegin")
     gen_containers = [generation_preview(g) for g in gens(limit=10)] # Start with last 10
@@ -46,16 +46,16 @@ def generation_preview(g):
 
 # A pending preview keeps polling this route until we return the image preview
 @app.get("/gens/{id}")
-async def get(id:int):
+def preview(id:int):
     return generation_preview(gens.get(id))
 
 # For images, CSS, etc.
 @app.get("/{fname:path}.{ext:static}")
-async def static(fname:str, ext:str): return FileResponse(f'{fname}.{ext}')
+def static(fname:str, ext:str): return FileResponse(f'{fname}.{ext}')
 
 # Generation route
 @app.post("/")
-async def post(prompt:str):
+def post(prompt:str):
     folder = f"gens/{str(uuid.uuid4())}"
     os.makedirs(folder, exist_ok=True)
     g = gens.insert(Generation(prompt=prompt, folder=folder))

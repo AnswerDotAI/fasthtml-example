@@ -31,7 +31,7 @@ app = FastHTML(hdrs=(picolink, gridlink))
 
 # Main page
 @app.get("/")
-async def get(session):
+def home(session):
     if 'session_id' not in session: session['session_id'] = str(uuid.uuid4())
     inp = Input(id="new-prompt", name="prompt", placeholder="Enter a prompt")
     add = Form(Group(inp, Button("Generate")), hx_post="/", target_id='gen-list', hx_swap="afterbegin")
@@ -66,7 +66,7 @@ def generation_preview(g, session):
 
 # A pending preview keeps polling this route until we return the image preview
 @app.get("/gens/{id}")
-async def get(id:int, session):
+def preview(id:int, session):
     return generation_preview(gens.get(id), session)
 
 # Likewise we poll to keep the balance updated
@@ -78,7 +78,7 @@ def get_balance():
 
 # For images, CSS, etc.
 @app.get("/{fname:path}.{ext:static}")
-async def static(fname:str, ext:str): return FileResponse(f'{fname}.{ext}')
+def static(fname:str, ext:str): return FileResponse(f'{fname}.{ext}')
 
 # Generation route
 @app.post("/")

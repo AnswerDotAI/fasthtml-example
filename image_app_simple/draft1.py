@@ -16,7 +16,7 @@ os.makedirs(folder, exist_ok=True)
 
 # Main page
 @app.get("/")
-def get():
+def home():
     inp = Input(id="new-prompt", name="prompt", placeholder="Enter a prompt")
     add = Form(Group(inp, Button("Generate")), hx_post="/", target_id='gen-list', hx_swap="afterbegin")
     gen_list = Div(id='gen-list')
