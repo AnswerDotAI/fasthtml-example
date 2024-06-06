@@ -1,19 +1,22 @@
 from fastcore.parallel import threaded
-from starlette.responses import FileResponse
-from fasthtml import *
-import uuid, os, uvicorn, requests, replicate
+from fasthtml.all import *
+import os, uvicorn, requests, replicate
 from PIL import Image
 
+app = FastHTML(hdrs=(picolink,))
+
+# Replicate setup (for image generation)
 replicate_api_token = os.environ['REPLICATE_API_KEY']
 client = replicate.Client(api_token=replicate_api_token)  
+
+# Store our generations
 generations = []
-app = FastHTML(hdrs=(picolink,))
 folder = f"gens/"
 os.makedirs(folder, exist_ok=True)
 
 # Main page
 @app.get("/")
-async def get():
+def get():
     inp = Input(id="new-prompt", name="prompt", placeholder="Enter a prompt")
     add = Form(Group(inp, Button("Generate")), hx_post="/", target_id='gen-list', hx_swap="afterbegin")
     gen_list = Div(id='gen-list')
@@ -29,16 +32,16 @@ def generation_preview(id):
                    hx_trigger='every 1s', hx_swap='outerHTML')
     
 @app.post("/generations/{id}")
-async def get(id:int): return generation_preview(id)
+def get(id:int): return generation_preview(id)
     
 
 # For images, CSS, etc.
 @app.get("/{fname:path}.{ext:static}")
-async def static(fname:str, ext:str): return FileResponse(f'{fname}.{ext}')
+def static(fname:str, ext:str): return FileResponse(f'{fname}.{ext}')
 
 # Generation route
 @app.post("/")
-async def post(prompt:str):
+def post(prompt:str):
     id = len(generations)
     generate_and_save(prompt, id)
     generations.append(prompt)

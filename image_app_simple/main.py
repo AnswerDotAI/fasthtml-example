@@ -1,21 +1,15 @@
-from sqlite_utils import Database
-from fastlite import *
-from fastlite.kw import *
 from fastcore.parallel import threaded
-from starlette.responses import FileResponse
-from starlette.requests import Request
-from fastcore.utils import *
-from fasthtml import *
-
+from fasthtml.all import *
 import uuid, os, uvicorn, requests, replicate
 from PIL import Image
+
 
 # Replicate setup (for generating images)
 replicate_api_token = os.environ['REPLICATE_API_KEY']
 client = replicate.Client(api_token=replicate_api_token)  
 
 # gens database for storing generated image details
-tables = Database('gens.db').t
+tables = database('gens.db').t
 gens = tables.gens
 if not gens in tables:
     gens.create(prompt=str, id=int, folder=str, pk='id')
@@ -34,7 +28,7 @@ async def get():
     inp = Input(id="new-prompt", name="prompt", placeholder="Enter a prompt")
     add = Form(Group(inp, Button("Generate")), hx_post="/", target_id='gen-list', hx_swap="afterbegin")
     gen_containers = [generation_preview(g) for g in gens(limit=10)] # Start with last 10
-    gen_list = Div(*gen_containers[::-1], id='gen-list', cls="row") # flexbox container: class = row
+    gen_list = Div(*reversed(gen_containers), id='gen-list', cls="row") # flexbox container: class = row
     return Title('Image Generation Demo'), Main(H1('Magic Image Generation'), add, gen_list, cls='container')
 
 # Show the image (if available) and prompt for a generation
