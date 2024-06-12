@@ -3,7 +3,6 @@ import uvicorn
 from backup import upload, download
 import os
 
-download()
 
 db = database("data/utodos.db")
 todos,users = db.t.todos,db.t.users
@@ -79,6 +78,7 @@ async def get(id:int):
                  target_id=tid(todo.id), hx_swap="outerHTML")
     return Div(Div(todo.title), btn)
 
+app.on_event("startup")(download)
 app.on_event("shutdown")(upload)
 
 if __name__ == '__main__': uvicorn.run("main:app", host='0.0.0.0', port=int(os.getenv("PORT", default=5001)))
