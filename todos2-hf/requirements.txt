@@ -1,0 +1,6 @@
+python-fasthtml>=0.0.8
+uvicorn>=0.29
+python-multipart
+huggingface-hub>=0.20.0
+sqlite_utils
+
