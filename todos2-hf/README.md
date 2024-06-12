@@ -24,5 +24,5 @@ By default this will upload a public space. You can make it private with the `--
 
 The space will upload a backup of your database to a [HuggingFace Dataset](https://huggingface.co/datasets). By default it will be private and its name will be `<your-huggingface-id>/todos-backup`. You can change this behavior in the `config.py` file.
 
-If you so chose, you can disable the automatic backups and use [persistent storage](https://huggingface.co/docs/hub/en/spaces-storage#persistent-storage-specs) instead for $5/month (USD). 
+If you so choose, you can disable the automatic backups and use [persistent storage](https://huggingface.co/docs/hub/en/spaces-storage#persistent-storage-specs) instead for $5/month (USD). 
 
