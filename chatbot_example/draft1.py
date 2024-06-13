@@ -57,8 +57,5 @@ async def post(request:Request):
                            cls="input input-bordered w-full", hx_swap_oob='true') # Clear the chat box
     return chat_message(chat.h[-2]), chat_message(chat.h[-1]), clear_chat_box # Return the last two messages and the chat box
 
-@app.get("/{fname:path}.{ext:static}")
-def static(fname:str, ext:str): return FileResponse(f'{fname}.{ext}')
-
-
-
+if __name__ == '__main__':
+  uvicorn.run("main:app", host='0.0.0.0', port=8000, reload=True)
