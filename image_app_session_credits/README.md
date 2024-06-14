@@ -1,6 +1,6 @@
 # Image Generation App with 'Credits'
 
-This example builds on the `image_app_simple` example by adding a credit system. There is a global pool of credits. Generating an image uses up one credit. Users can donate credits to the pool. The app will not generate images if there are not enough credits in the pool. You only see your images (since we use a session cookie to link a user to their images), but the credits are shared among all users.
+This example builds on the `image_app_simple` example by adding a credit system. There is a global pool of credits. Generating an image uses up one credit. Users can donate credits to the pool (currently 50 credits for $1). The app will not generate images if there are not enough credits in the pool. You only see your images (since we use a session cookie to link a user to their images), but the credits are shared among all users.
 
 You can view the live demo here: https://image-gen-public-credit-pool-production.up.railway.app/
 

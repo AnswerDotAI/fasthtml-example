@@ -2,6 +2,7 @@ from fastcore.parallel import threaded
 from fasthtml.all import *
 import uuid, os, uvicorn, requests, replicate, stripe
 from PIL import Image
+from starlette.responses import RedirectResponse
 
 # Replicate setup (for generating images)
 replicate_api_token = os.environ['REPLICATE_API_KEY']
@@ -41,7 +42,7 @@ def home(session):
         H1('Image Generation Demo (Sessions, Credits)'), 
         P("Hello", str(session)), 
         get_balance(),  # Live-updating balance
-        P(A("Buy 50 more", href="/buy_global"), " to share ($5)"),
+        P(A("Buy 50 more", href="/buy_global"), " to share ($1)"),
         add, gen_list, cls='container')
 
 # Show the image (if available) and prompt for a generation
@@ -138,9 +139,9 @@ def buy_credits(session):
       line_items=[{
           'price_data': {
               'currency': 'usd',
-              'unit_amount': 500,
+              'unit_amount': 100,
               'product_data': {
-                  'name': 'Buy 50 credits (to share)',
+                  'name': 'Buy 50 credits for $1 (to share)',
               },
           },
           'quantity': 1,
