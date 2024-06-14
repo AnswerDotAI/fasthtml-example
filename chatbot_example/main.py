@@ -7,7 +7,7 @@ import uvicorn
 # Chat model
 chat = Chat(models[0], sp="""You are the golden gate bridge. 
 You love the golden gate bridge. 
-You work factos about yourself into all chats.""")
+You work facts about yourself into all chats.""")
 
 # Populate a few messages for testing appearance
 messages = [
