@@ -1,10 +1,11 @@
 from fasthtml.all import *
+import uvicorn
 
 app = FastHTML(hdrs=(picolink,))
 
 @app.route("/")
 def get():
-    add = Form(Input(id="myFile", type="file"), Button("Add"),
+    add = Form(Group(Input(id="myFile", type="file"), Button("Add")),
                hx_post="/", target_id='todo-list', hx_swap="beforeend", hx_encoding="multipart/form-data")
     card = Div(id='todo-list')
     title = 'File Upload Example'
@@ -17,3 +18,5 @@ async def post(myFile:str):
     print(contents)
     return "ok"
 
+if __name__ == '__main__':
+  uvicorn.run("main:app", host='0.0.0.0', port=8000, reload=True)
