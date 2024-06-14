@@ -9,7 +9,7 @@ replicate_api_token = os.environ['REPLICATE_API_KEY']
 client = replicate.Client(api_token=replicate_api_token)  
 
 # gens database for storing generated image details
-tables = database('gens.db').t
+tables = database('data/gens.db').t
 gens = tables.gens
 if not gens in tables:
     gens.create(prompt=str, id=int, folder=str, pk='id')
@@ -56,7 +56,7 @@ def static(fname:str, ext:str): return FileResponse(f'{fname}.{ext}')
 # Generation route
 @app.post("/")
 def post(prompt:str):
-    folder = f"gens/{str(uuid.uuid4())}"
+    folder = f"data/gens/{str(uuid.uuid4())}"
     os.makedirs(folder, exist_ok=True)
     g = gens.insert(Generation(prompt=prompt, folder=folder))
     generate_and_save(g.prompt, g.id, g.folder)
