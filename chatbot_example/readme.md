@@ -5,6 +5,13 @@ This demonstrates a simple chatbot. Key features:
 - Chat bubble styling based on daisyui
 - "Streaming" example where the model response updates as it is generated
 
+![example screenshot](screenshot_dark.png)
+
 Included is a draft version without streaming.
 
-You can see the deployed version here: TODO deploy and share.
+Requires OPENAI_API_KEY to be set in the environment. For local testing:
+
+```
+export OPENAI_API_KEY=your-key
+python main.py
+```

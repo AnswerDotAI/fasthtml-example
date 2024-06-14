@@ -79,7 +79,6 @@ def get():
 @threaded
 def get_response(r, idx):
     for chunk in r: messages[idx]['content'] += chunk
-    print("Done", messages[idx])
     messages[idx] = {"role":"chatbot", "content":messages[idx]['content']}
     chat.h[-1] = {"role":"assistant", "content":messages[idx]['content']}
 
@@ -88,7 +87,6 @@ def get_response(r, idx):
 async def post(request:Request):
     form_data = await request.form()
     msg = form_data['msg']
-    print("Hello", msg)
     clear_chat_box = Input(type="text", name='msg', id='msg-input', 
                            placeholder="Type a message", cls="input input-bordered w-full", 
                            hx_swap_oob='true')
