@@ -12,11 +12,11 @@ stripe.api_key = os.environ["STRIPE_KEY"]
 webhook_secret = os.environ['STRIPE_WEBHOOK_SECRET']
 DOMAIN = os.environ['DOMAIN']
 
-# Global balance (should be stored somewhere persistant!)
+# Global balance (NB: resets every restart)
 global_balance = 100
 
 # gens database for storing generated image details
-tables = Database('gens.db').t
+tables = Database('data/gens.db').t
 gens = tables.gens
 if not gens in tables:
     gens.create(prompt=str, session_id=str, id=int, folder=str, pk='id')
@@ -72,7 +72,7 @@ def preview(id:int, session):
 # Likewise we poll to keep the balance updated
 @app.get("/balance")
 def get_balance():
-  return Div(P(f"Global balance: {global_balance}"),
+  return Div(P(f"Global balance: {global_balance} credits"),
              id='balance', hx_get="/balance",
              hx_trigger="every 2s", hx_swap="outerHTML")
 
@@ -101,7 +101,7 @@ def post(prompt: str, session):
     global_balance -= 1
 
     # Generate as before
-    folder = f"gens/{str(uuid.uuid4())}"
+    folder = f"data/gens/{str(uuid.uuid4())}"
     os.makedirs(folder, exist_ok=True)
     g = gens.insert(
         Generation(prompt=prompt,
@@ -166,7 +166,7 @@ def success():
   return P(f'Success!', A('Return Home', href='/'))
 
 
-# STRIPE calls this to tell APP results from requests
+# STRIPE calls this to tell APP when a payment was completed.
 @app.post('/webhook')
 async def stripe_webhook(request):
   global global_balance
