@@ -67,8 +67,8 @@ pending = False
 caption = "Draw something!"
 
 app = FastHTML(hdrs=(picolink,
-                     Script(NotStr(canvas_js), type="module"),
-                     Style(NotStr(canvas_css))))
+                     Script(canvas_js, type="module"),
+                     Style(canvas_css)))
 
 # Main page
 @app.get("/")
