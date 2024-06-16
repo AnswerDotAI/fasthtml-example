@@ -1,4 +1,4 @@
-from fasthtml.all import *
+from fasthtml.common import *
 import uvicorn
 
 db = database('data/todos.db')

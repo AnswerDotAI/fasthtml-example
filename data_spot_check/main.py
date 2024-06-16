@@ -1,4 +1,4 @@
-from fasthtml.all import *
+from fasthtml.common import *
 import uuid, os, uvicorn, random, datasets
 import pandas as pd
 from starlette.responses import RedirectResponse, FileResponse  

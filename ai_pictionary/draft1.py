@@ -1,4 +1,4 @@
-from fasthtml.all import *
+from fasthtml.common import *
 import anthropic, os, base64, uvicorn
 
 # We'll use anthropic's Haiku model for this demo

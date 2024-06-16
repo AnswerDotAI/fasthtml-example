@@ -1,5 +1,5 @@
 from fastcore.parallel import threaded
-from fasthtml.all import *
+from fasthtml.common import *
 import os, uvicorn, requests, replicate
 from PIL import Image
 
