@@ -1,4 +1,4 @@
-python-fasthtml>=0.0.15
+python-fasthtml>=0.0.16
 uvicorn>=0.29
 python-multipart
 
