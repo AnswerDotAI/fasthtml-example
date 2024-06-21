@@ -11,15 +11,12 @@ def more_cards(request):
     
     new_cards = [create_card(i) for i in range(start, end)]
     
-    return Div(
-        *new_cards,
-        Div(
+    return *new_cards, Div(
             hx_get=f"/more-cards?start={end}",
             hx_trigger="intersect once",
             hx_swap="afterend",
             hx_target="this"
         )
-    )
 ```
 
 ![screenshot](screenshot.png)
