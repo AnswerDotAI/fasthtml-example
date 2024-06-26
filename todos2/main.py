@@ -1,79 +1,88 @@
 from fasthtml.common import *
-import uvicorn
 
-db = database('data/utodos.db')
-todos,users = db.t.todos,db.t.users
-if todos not in db.t:
-    users.create(name=str, pwd=str, pk='name')
-    todos.create(id=int, title=str, done=bool, name=str, pk='id')
-Todo,User = todos.dataclass(),users.dataclass()
-
-id_curr = 'current-todo'
-def tid(id): return f'todo-{id}'
-
-def lookup_user(u,p):
-    try: user = users[u]
-    except NotFoundError: user = users.insert(name=u, pwd=p)
-    return user.pwd==p
-
-css = Style(':root { --pico-font-size: 100%; }')
-authmw = user_pwd_auth(lookup_user, skip=[r'/favicon\.ico', r'/static/.*', r'.*\.css'])
-
-def before(auth):
+def redir(path='/login'): return RedirectResponse(path, status_code=303)
+def before(req, sess):
+    auth = req.scope['auth'] = sess.get('auth', None)
+    if not auth: return redir()
     todos.xtra(name=auth)
 
-app = FastHTML(hdrs=(picolink, css), middleware=authmw, before=before)
+app,(users,User),(todos,Todo) = fast_app(
+    'data/data.db',
+    before = Beforeware(before, skip=[r'/favicon\.ico', r'/static/.*', r'.*\.css', '/login']),
+    hdrs=(SortableJS('.sortable'), MarkdownJS('.markdown')),
+    users=dict(name=str, pwd=str, pk='name'),
+    todos=dict(id=int, title=str, done=bool, name=str, details=str, priority=int, pk='id')
+)
 rt = app.route
 
-@rt("/{fname:path}.{ext:static}")
-async def get(fname:str, ext:str): return FileResponse(f'{fname}.{ext}')
+@rt("/login")
+def get():
+    frm = Form(
+        Input(id='name', placeholder='Name'),
+        Input(id='pwd', type='password', placeholder='Password'),
+        Button('login'),
+        action='/login', method='post')
+    return Titled("Login", frm)
+
+@dataclass
+class Login: name:str; pwd:str
+
+@rt("/login")
+def post(login:Login, sess):
+    if not login.name or not login.pwd: return redir()
+    try: u = users[login.name]
+    except NotFoundError: u = users.insert(login)
+    if not compare_digest(u.pwd.encode("utf-8"), login.pwd.encode("utf-8")): return redir()
+    sess['auth'] = u.name
+    return redir('/')
+
+@app.get("/logout")
+def logout(sess):
+    del sess['auth']
+    return redir()
 
 @patch
 def __xt__(self:Todo):
-    show = AX(self.title, f'/todos/{self.id}', id_curr)
-    edit = AX('edit',     f'/edit/{self.id}' , id_curr)
-    dt = ' (done)' if self.done else ''
-    return Li(show, dt, ' | ', edit, id=tid(self.id))
+    show = AX(self.title, f'/todo/{self.id}', 'current-todo')
+    edit = AX('edit',     f'/edit/{self.id}', 'current-todo')
+    dt = '✅ ' if self.done else ''
+    cts = (dt, show, ' | ', edit, Hidden(id="id", value=self.id), Hidden(id="priority", value="0"))
+    return Li(*cts, id=f'todo-{self.id}')
 
-def mk_input(**kw): return Input(id="new-title", name="title", placeholder="New Todo", **kw)
-def clr_details(): return Div(hx_swap_oob='innerHTML', id=id_curr)
-
+new_params = dict(id="new-title", name="title", placeholder="New Todo")
 @rt("/")
-async def get(request, auth):
-    add = Form(Group(mk_input(), Button("Add")),
-               hx_post="/", target_id='todo-list', hx_swap="beforeend")
-    card = Card(Ul(*todos(), id='todo-list'),
-                header=add, footer=Div(id=id_curr)),
-    title = 'Todo list'
-    top = Grid(H1(f"{auth}'s {title}"), Div(A('logout', href=basic_logout(request)), style='text-align: right'))
-    return Title(title), Main(top, card, cls='container')
+def get(auth):
+    top = Grid(H1(f"{auth}'s Todo list"), Div(A('logout', href='/logout'), style='text-align: right'))
+    add = Form(Group(Input(**new_params), Button("Add")), hx_post="/", target_id='todo-list', hx_swap="afterbegin")
+    frm = Form(*todos(order_by='priority'), id='todo-list', cls='sortable', hx_post="/reorder", hx_trigger="end")
+    card = Card(Ul(frm), header=add, footer=Div(id='current-todo'))
+    return Title("Todo list"), Container(top, card)
 
-@rt("/todos/{id}")
-async def delete(id:int):
+@rt("/reorder")
+def post(id:list[int]):
+    for i,id_ in enumerate(id): todos.update({'priority':i}, id_)
+    return tuple(todos(order_by='priority'))
+
+@rt("/todo/{id}")
+def delete(id:int):
     todos.delete(id)
-    return clr_details()
-
-@rt("/")
-async def post(todo:Todo):
-    return todos.insert(todo), mk_input(hx_swap_oob='true')
+    return clear('current-todo')
 
 @rt("/edit/{id}")
 async def get(id:int):
     res = Form(Group(Input(id="title"), Button("Save")),
-        Hidden(id="id"), Checkbox(id="done", label='Done'),
-        hx_put="/", target_id=tid(id), id="edit")
+        Hidden(id="id"), Checkbox(id="done", label='Done'), Textarea(id="details", name="details", rows=10),
+        hx_put="/", target_id=f'todo-{id}', id="edit")
     return fill_form(res, todos[id])
 
 @rt("/")
-async def put(todo: Todo):
-    return todos.upsert(todo), clr_details()
+async def put(todo: Todo): return todos.update(todo), clear('current-todo')
+@rt("/")
+async def post(todo:Todo): return todos.insert(todo), Input(**new_params, hx_swap_oob='true')
 
-@rt("/todos/{id}")
+@rt("/todo/{id}")
 async def get(id:int):
     todo = todos[id]
-    btn = Button('delete', hx_delete=f'/todos/{todo.id}',
-                 target_id=tid(todo.id), hx_swap="outerHTML")
-    return Div(Div(todo.title), btn)
-
-if __name__ == '__main__': uvicorn.run("main:app", host='0.0.0.0', port=int(os.getenv("PORT", default=5001)))
-
+    btn = Button('delete', hx_delete=f'/todo/{id}', target_id=f'todo-{id}', hx_swap="outerHTML")
+    return Div(Div(todo.title), Div(todo.details, cls="markdown"), btn)
+run_uv()
