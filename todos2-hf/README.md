@@ -11,25 +11,5 @@ license: apache-2.0
 
 Deploy a FastHTML application to [HuggingFace Spaces](https://huggingface.co/spaces) for free with one command!
 
-## Quickstart
+For details, see the [fasthtml-hf](https://github.com/AnswerDotAI/fasthtml-hf) README.
 
-1. Create a free account on [HuggingFace](https://huggingface.co)
-2. Go to your account settings and create an access token with write access. Keep this token safe and don't share it.
-3. Set the `HF_TOKEN` environment variable to that token
-4. Install the huggingface hub client library (`pip install huggingface-hub`).
-5. Run the `deploy_hf.py` script and pass the name you want to give your space along with your token, e.g. `python deploy_hf.py fasthtml-todos <token>`.
-
-By default this will upload a public space. You can make it private with the `--private` flag.
-
-## Configuration
-
-The space will upload a backup of your database to a [HuggingFace Dataset](https://huggingface.co/datasets). By default it will be private and its name will be `<your-huggingface-id>/todos-backup`. You can change this behavior in the `config.ini` file. In not provided, a default file will be created with the contents (note that the `[DEFAULT]` line is required at the top):
-
-```
-[DEFAULT]
-dataset_id = todos-backup
-db_dir = data
-private_backup = True
-```
-
-If you so choose, you can disable the automatic backups and use [persistent storage](https://huggingface.co/docs/hub/en/spaces-storage#persistent-storage-specs) instead for $5/month (USD). 
