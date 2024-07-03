@@ -5,10 +5,10 @@ from PIL import Image
 
 # Replicate setup (for generating images)
 replicate_api_token = os.environ['REPLICATE_API_KEY']
-client = replicate.Client(api_token=replicate_api_token)  
+client = replicate.Client(api_token=replicate_api_token)
 
 # gens database for storing generated image details
-tables = Database('gens.db').t
+tables = database('gens.db').t
 gens = tables.gens
 if not gens in tables:
     gens.create(prompt=str, session_id=str, id=int, folder=str, pk='id')
@@ -30,8 +30,8 @@ async def get(session):
     gen_containers = [generation_preview(g) for g in gens(limit=10, where=f"session_id == '{session['session_id']}'")]
     gen_list = Div(*gen_containers[::-1], id='gen-list', cls="row") # flexbox container: class = row
     return Title('Image Generation Demo'), Main(
-        H1('Image Gen: Sessions'), 
-        P("Hello", str(session)), 
+        H1('Image Gen: Sessions'),
+        P("Hello", str(session)),
         add, gen_list, cls='container')
 
 # Show the image (if available) and prompt for a generation
@@ -43,8 +43,8 @@ def generation_preview(g):
                        Img(src=image_path, alt="Card image", cls="card-img-top"),
                        Div(P(B("Prompt: "), g.prompt, cls="card-text"),cls="card-body"),
                    ), id=f'gen-{g.id}', cls=grid_cls)
-    return Div(f"Generating with prompt '{g.prompt}'...", 
-            id=f'gen-{g.id}', hx_get=f"/gens/{g.id}", 
+    return Div(f"Generating with prompt '{g.prompt}'...",
+            id=f'gen-{g.id}', hx_get=f"/gens/{g.id}",
             hx_trigger="every 2s", hx_swap="outerHTML", cls=grid_cls)
 
 # A pending preview keeps polling this route until we return the image preview

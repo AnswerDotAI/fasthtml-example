@@ -6,7 +6,7 @@ from starlette.responses import RedirectResponse
 
 # Replicate setup (for generating images)
 replicate_api_token = os.environ['REPLICATE_API_KEY']
-client = replicate.Client(api_token=replicate_api_token) 
+client = replicate.Client(api_token=replicate_api_token)
 
 # Stripe (for payments)
 stripe.api_key = os.environ["STRIPE_KEY"]
@@ -17,7 +17,7 @@ DOMAIN = os.environ['DOMAIN']
 global_balance = 100
 
 # gens database for storing generated image details
-tables = Database('data/gens.db').t
+tables = database('data/gens.db').t
 gens = tables.gens
 if not gens in tables:
     gens.create(prompt=str, session_id=str, id=int, folder=str, pk='id')
@@ -39,8 +39,8 @@ def home(session):
     gen_containers = [generation_preview(g, session) for g in gens(limit=10, where=f"session_id == '{session['session_id']}'")]
     gen_list = Div(*gen_containers[::-1], id='gen-list', cls="row") # flexbox container: class = row
     return Title('Image Generation Demo'), Main(
-        H1('Image Generation Demo (Sessions, Credits)'), 
-        P("Hello", str(session)), 
+        H1('Image Generation Demo (Sessions, Credits)'),
+        P("Hello", str(session)),
         get_balance(),  # Live-updating balance
         P(A("Buy 50 more", href="/buy_global"), " to share ($1)"),
         add, gen_list, cls='container')
@@ -84,7 +84,7 @@ def static(fname:str, ext:str): return FileResponse(f'{fname}.{ext}')
 # Generation route
 @app.post("/")
 def post(prompt: str, session):
-    
+
     # Check for session ID
     if 'session_id' not in session: return "No session ID"
 
