@@ -1,10 +1,10 @@
 from fasthtml.common import *
-import uvicorn
 
-db = database('data/todos.db')
-todos = db.t.todos
-if todos not in db.t: todos.create(id=int, title=str, done=bool, pk='id')
-Todo = todos.dataclass()
+app,todos,Todo = fast_app(
+    'data/todos.db',
+    hdrs=[Style(':root { --pico-font-size: 100%; }')],
+    id=int, title=str, done=bool, pk='id')
+rt = app.route
 
 id_curr = 'current-todo'
 def tid(id): return f'todo-{id}'
@@ -13,18 +13,10 @@ def tid(id): return f'todo-{id}'
 def __xt__(self:Todo):
     show = AX(self.title, f'/todos/{self.id}', id_curr)
     edit = AX('edit',     f'/edit/{self.id}' , id_curr)
-    dt = ' (done)' if self.done else ''
+    dt = ' ✅' if self.done else ''
     return Li(show, dt, ' | ', edit, id=tid(self.id))
 
-css = Style(':root { --pico-font-size: 100%; }')
-app = FastHTML(hdrs=(picolink, css))
-rt = app.route
-
-@rt("/{fname:path}.{ext:static}")
-async def get(fname:str, ext:str): return FileResponse(f'{fname}.{ext}')
-
 def mk_input(**kw): return Input(id="new-title", name="title", placeholder="New Todo", **kw)
-def clr_details(): return Div(hx_swap_oob='innerHTML', id=id_curr)
 
 @rt("/")
 async def get():
@@ -38,7 +30,7 @@ async def get():
 @rt("/todos/{id}")
 async def delete(id:int):
     todos.delete(id)
-    return clr_details()
+    return clear(id_curr)
 
 @rt("/")
 async def post(todo:Todo): return todos.insert(todo), mk_input(hx_swap_oob='true')
@@ -51,7 +43,7 @@ async def get(id:int):
     return fill_form(res, todos.get(id))
 
 @rt("/")
-async def put(todo: Todo): return todos.upsert(todo), clr_details()
+async def put(todo: Todo): return todos.upsert(todo), clear(id_curr)
 
 @rt("/todos/{id}")
 async def get(id:int):
@@ -60,5 +52,4 @@ async def get(id:int):
                  target_id=tid(todo.id), hx_swap="outerHTML")
     return Div(Div(todo.title), btn)
 
-if __name__ == '__main__': uvicorn.run("main:app", host='0.0.0.0', port=int(os.getenv("PORT", default=5001)))
-
+run_uv()

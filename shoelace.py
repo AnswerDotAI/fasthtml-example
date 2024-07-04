@@ -41,13 +41,17 @@ def get():
         H1('Welcome to Your Dashboard', cls='text-2xl font-bold mt-4 mb-2'),
         P("Here's an overview of your latest activity and key metrics.", cls='mb-8'),
         Div(users(), id='metrics', cls='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'),
+        Div(id='details'),
         cls='flex-1 p-8 overflow-y-auto'),
       cls='flex flex-1 overflow-hidden'),
     cls='h-full flex flex-col bg-gray-50')
 
+@rt('/detl')
+def get(title:str): return Div(f'Details for {title}')
+
 def metric_card(title, value, trend):
     return Sl_card(
-        Div(title, cls='text-sm text-gray-600 mb-1'),
+        Div(title, cls='text-sm text-gray-600 mb-1', hx_get=f'/detl?title={title}', hx_target='#details'),
         Div(value, cls='text-3xl font-bold mb-1'),
         Div(trend, cls='text-xs text-green-600'),
         cls='flex flex-col justify-between')
