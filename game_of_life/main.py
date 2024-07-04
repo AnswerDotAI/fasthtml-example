@@ -4,6 +4,8 @@ from starlette.endpoints import WebSocketEndpoint
 from starlette.routing import WebSocketRoute
 import asyncio
 
+if __name__ == "__main__": sys.exit("Run this app with `uvicorn main:app`")
+
 css = Style('#grid { display: grid; grid-template-columns: repeat(20, 20px); grid-template-rows: repeat(20, 20px);gap: 1px; } .cell { width: 20px; height: 20px; border: 1px solid black; } .alive { background-color: green; } .dead { background-color: white; }')
 gridlink = Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css")
 htmx_ws = Script(src="https://unpkg.com/htmx-ext-ws@2.0.0/ws.js")
