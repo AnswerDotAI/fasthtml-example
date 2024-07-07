@@ -5,7 +5,7 @@ app,rt = get_app()
 def footer():
     links = (A('items', href='/'), A('gallery', href='/gallery'))
     return Footer(Div(links, cls='inner'), cls='wrapper style1 align-center')
-    
+
 @rt("/")
 def get():
     items = [
@@ -30,3 +30,4 @@ def get():
     return PageWrapper("Gallery Demo", wrapper, footer())
 
 run_uv()
+
