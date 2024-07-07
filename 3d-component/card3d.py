@@ -3,7 +3,7 @@ from fasthtml.common import *
 # ...which is based on this web component: https://github.com/zachleat/hypercard
 # ...which is from this version: https://codepen.io/markmiro/pen/wbqMPa
 
-def card_3d(text, background, amt=1., left_align=False):
+def card_3d(text, background, amt=1., left_align=False, **kw):
     return Div(text, Div(), Style("""
 me {
     position: relative; width: 300px; height: 400px; padding: 1em;
@@ -36,4 +36,4 @@ me().rotateToMouse = ev => {
                          rotate3d(${y/100*amt}, ${-x/100*amt}, 0, ${Math.log(d)*2*amt}deg)`
     me('div', e).style.backgroundImage = `radial-gradient(
         circle at ${x*2 + b.width/2}px ${y*2 + b.height/2}px, #ffffff77, #0000000f)`
-}""" % amt))
+}""" % amt), **kw)
