@@ -6,14 +6,13 @@ def before(req, sess):
     if not auth: return redir()
     todos.xtra(name=auth)
 
-app,(users,User),(todos,Todo) = fast_app(
+app,rt,(users,User),(todos,Todo) = fast_app(
     'data/data.db',
     before = Beforeware(before, skip=[r'/favicon\.ico', r'/static/.*', r'.*\.css', '/login']),
     hdrs=(SortableJS('.sortable'), MarkdownJS('.markdown')),
     users=dict(name=str, pwd=str, pk='name'),
     todos=dict(id=int, title=str, done=bool, name=str, details=str, priority=int, pk='id')
 )
-rt = app.route
 
 @rt("/login")
 def get():

@@ -36,8 +36,7 @@ css = Style('''\
 }
 ''')
 
-app, files, File = fast_app('data/files.db', hdrs=(ace_editor, gridlink, css), id=int, filename=str, content=str, pk='id')
-rt = app.route
+app,rt,files, File = fast_app('data/files.db', hdrs=(ace_editor, gridlink, css), id=int, filename=str, content=str, pk='id')
 
 id_curr = 'current-file'
 id_list = 'file-list'

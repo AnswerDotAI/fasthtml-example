@@ -1,10 +1,9 @@
 from fasthtml.common import *
 
-app,todos,Todo = fast_app(
+app,rt,todos,Todo = fast_app(
     'data/todos.db',
     hdrs=[Style(':root { --pico-font-size: 100%; }')],
     id=int, title=str, done=bool, pk='id')
-rt = app.route
 
 id_curr = 'current-todo'
 def tid(id): return f'todo-{id}'

@@ -1,8 +1,7 @@
 from fasthtml.fastapp import *
 from fastcore.utils import *
 
-app = fast_app(hdrs=[HighlightJS()])
-rt = app.route
+app,rt = fast_app(hdrs=[HighlightJS()])
 
 @rt("/convert")
 def post(html: str): return Pre(Code(html2xt(html))) if html else ''

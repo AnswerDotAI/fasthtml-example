@@ -10,11 +10,10 @@ def lookup_user(u,p):
 authmw = user_pwd_auth(lookup_user, skip=[r'/favicon\.ico', r'/static/.*', r'.*\.css'])
 def before(auth): todos.xtra(name=auth)
 
-app,(users,User),(todos,Todo) = fast_app(
+app,rt,(users,User),(todos,Todo) = fast_app(
     'data/utodos.db', middleware=authmw, before=before,
     users=dict(name=str, pwd=str, pk='name'),
     todos=dict(id=int, title=str, done=bool, name=str, details=str, priority=int, pk='id'))
-rt = app.route
 
 @patch
 def __xt__(self:Todo):

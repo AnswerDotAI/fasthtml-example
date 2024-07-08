@@ -1,5 +1,6 @@
 from fasthtml.common import *
 from card3d import card_3d
+from playingcard import playing_card
 
 hdrs = [Style('''* { box-sizing: border-box; }
     html, body { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
@@ -16,6 +17,9 @@ def get():
 
 @rt('/click')
 def get(): return P('Clicked!')
+
+@rt("/pc")
+async def get(): return Titled("Playing Card Demo", H1("Click the card to flip it"), playing_card(10, 'diamonds'))
 
 run_uv()
 
