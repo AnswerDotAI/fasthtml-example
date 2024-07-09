@@ -1,5 +1,4 @@
 from fasthtml.common import *
-from fastcore.xtras import *
 # Based on surreal.js version: https://gist.github.com/gnat/f094e947b3a785e1ed6b7def979132ae
 # ...which is based on this web component: https://github.com/zachleat/hypercard
 # ...which is from this version: https://codepen.io/markmiro/pen/wbqMPa
