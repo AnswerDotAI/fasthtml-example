@@ -1,0 +1,12 @@
+me {
+    position: relative; width: 300px; height: 400px; padding: 1em; display:inline-block;
+    font-weight: bold; text-align: var(--tpl-align); text-shadow: 0 0 4px #000; color: #ddd;
+    -webkit-text-stroke: 1px black; margin: 1em; font-size: 1.25em;
+    box-shadow: 0 1px 5px #00000099; border-radius: 10px; background: var(--tpl-background) center/cover;
+    transition: .3s ease-out; transition-property: transform, box-shadow;
+}
+me:hover { transition-duration: .15s; box-shadow: 0 5px 20px 5px #00000044; }
+me > div {
+    position: absolute; inset: 0; border-radius: 10px;
+    background-image: radial-gradient(circle at 90% -20%, #ffffff55, #0000000f);
+}
