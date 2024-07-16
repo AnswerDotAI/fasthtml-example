@@ -16,9 +16,15 @@ messages = [
 ]
 
 # Our FastHTML app
+css = Style('''
+    body, html { height: 100%; margin: 0; }
+    body { display: flex; flex-direction: column; }
+    footer { flex-shrink: 0; padding: 10px; text-align: center; background-color: #333; color: white; }
+    footer a { color: #9cf; }
+''')
 tlink = Script(src="https://cdn.tailwindcss.com"),
 dlink = Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css")
-app = FastHTML(hdrs=(picolink, tlink, dlink))
+app = FastHTML(hdrs=(picolink, css, tlink, dlink))
 
 # Chat message component (with streaming option)
 def Message(msg_idx:int, stream: bool = False):
@@ -71,6 +77,10 @@ def get():
             hx_swap="beforeend",
             target_id="chatlist",
             hx_target="#chatlist"
+        ),
+        Footer(
+            P('Made by Johno Whitaker. Check out the code', AX('here', href='https://github.com/AnswerDotAI/fasthtml-example/tree/main/chatbot_example', target='_blank')),
+            cls="p-4 max-w-lg mx-auto"
         ),
         cls="p-4 max-w-lg mx-auto"
     )

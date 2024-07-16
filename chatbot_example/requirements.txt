@@ -1,0 +1,4 @@
+python-fasthtml
+uvicorn>=0.29
+git+https://github.com/AnswerDotAI/cosette.git
+toolslm
