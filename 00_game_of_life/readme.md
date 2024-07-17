@@ -25,7 +25,7 @@ Try out the live version hosted on Railway: [Game of Life Demo](https://game-of-
 
 ### Game Logic
 
-The core Game of Life logic is implemented in the `update_grid` function:
+The core Game of Life logic is implemented in the `update_grid` function courtesy of ChatGPT:
 
 ```python
 def update_grid(grid: list[list[int]]) -> list[list[int]]:
@@ -47,8 +47,29 @@ def update_grid(grid: list[list[int]]) -> list[list[int]]:
     return new_grid
 ```
 
+This function determines how the game world evolves over time by applying the rules of Conway's Game of Life to the cells in the grid.
 
-This function applies the rules of Conway's Game of Life to update the grid state.
+### Grid Rendering and User Interaction
+
+The grid is rendered using FastHTML components:
+
+```python
+def Grid():
+    cells = []
+    for y, row in enumerate(game_state['grid']):
+        for x, cell in enumerate(row):
+            cell_class = 'alive' if cell else 'dead'
+            cell = Div(cls=f'cell {cell_class}', hx_put='/update', hx_vals={'x': x, 'y': y}, hx_swap='none', hx_target='#gol', hx_trigger='click')
+            cells.append(cell)
+    return Div(*cells, id='grid')
+
+@rt('/update')
+async def put(x: int, y: int):
+    game_state['grid'][y][x] = 1 if game_state['grid'][y][x] == 0 else 0
+    await update_players()
+```
+
+Above is a component for representing the game's state that the user can interact with and update on the server using cool HTMX features such as `hx_vals` for determining which cell was clicked to make it dead or alive. We use `hx_put` to send a PUT request to the server to update the game state rather than a POST request, which would have returned a new Grid component with the updated state since we want to handle that via websockets so all clients can see the changes rather than only the client that initiated the change.
 
 ### FastHTML and WebSocket Integration
 
@@ -63,8 +84,7 @@ async def on_connect(send): player_queue.append(send)
 async def on_disconnect(send): await update_players()
 ```
 
-
-The `@app.ws` decorator sets up the WebSocket endpoint, while `on_connect` and `on_disconnect` manage the player queue.
+The `@app.ws` decorator sets up the WebSocket endpoint, while `on_connect` and `on_disconnect` manage the player queue. Similar to all of HTMX, you send HTML snippets, or in our case FastHTML components, to the client to update the page. There is only one difference with standard HTMX updating of HTML on the client and how it is done via websockets, that being all swaps are OOB. You can find more information on the HTMX websocket extension documentation page [here](https://github.com/bigskysoftware/htmx-extensions/blob/main/src/ws/README.md).
 
 ### Real-time Updates
 
@@ -87,28 +107,6 @@ background_task_coroutine = asyncio.create_task(background_task())
 ```
 
 `update_players()` sends the current game state to all connected clients, updating their visuals in real-time and removing any players that have disconnected.
-
-### Grid Rendering
-
-The grid is rendered using FastHTML components:
-
-```python
-def Grid():
-    cells = []
-    for y, row in enumerate(game_state['grid']):
-        for x, cell in enumerate(row):
-            cell_class = 'alive' if cell else 'dead'
-            cell = Div(cls=f'cell {cell_class}', hx_put='/update', hx_vals={'x': x, 'y': y}, hx_swap='none', hx_target='#gol', hx_trigger='click')
-            cells.append(cell)
-    return Div(*cells, id='grid')
-
-@rt('/update')
-async def put(x: int, y: int):
-    game_state['grid'][y][x] = 1 if game_state['grid'][y][x] == 0 else 0
-    await update_players()
-```
-
-Above is a component for representing the game's state that the user can interact with and update on the server using cool HTMX features such as `hx_vals` for determining which cell was clicked to make it dead or alive. We use `hx_put` to send a PUT request to the server to update the game state rather than a POST request, which would have returned a new Grid component with the updated state since we want to handle that via websockets so all clients can see the changes rather than only the client that initiated the change.
 
 ## Running Locally
 
