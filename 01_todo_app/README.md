@@ -30,7 +30,7 @@ app,rt,todos,Todo = fast_app(
     id=int, title=str, done=bool, pk='id')
 ```
 
-This single line sets up our app, routing, database connection, and Todo model.
+This single line sets up our app, routing, database connection, and Todo data model model.
 
 ### Todo Item Rendering
 
@@ -45,11 +45,11 @@ def __xt__(self:Todo):
     return Li(show, dt, ' | ', edit, id=tid(self.id))
 ```
 
-This method defines how each Todo object is displayed, including its title, completion status, and edit link.
+This method defines how each Todo object is displayed, including its title, completion status, and edit link. We are taking advantage of monkey patching via the `@patch` decorator to add new functionality to the Todo class. If you want to learn more about monkey patching, check out this [article](https://en.wikipedia.org/wiki/Monkey_patch).
 
 ### Adding New Todos
 
-The form for adding new todos is created dynamically:
+Here is how we setup the form for adding new todos:
 
 ```python
 def mk_input(**kw): return Input(id="new-title", name="title", placeholder="New Todo", **kw)
@@ -68,7 +68,7 @@ This creates an input field and "Add" button, which uses HTMX to post new todos 
 
 ### Editing Todos
 
-Editing a todo item is handled by this route:
+Editing a todo item is handled by this route which takes the todo's id as a parameter:
 
 ```python
 @rt("/edit/{id}")
@@ -79,11 +79,11 @@ async def get(id:int):
     return fill_form(res, todos.get(id))
 ```
 
-This creates a form pre-filled with the todo's current data, allowing for easy editing.
+This allows us to dynamically fill the form with the todo's current data, allowing for easy editing.
 
 ### Deleting Todos
 
-Deletion is handled by a simple route:
+Similarly, we can do the same for deleting todos, except we use the `delete` method instead of `get`:
 
 ```python
 @rt("/todos/{id}")
@@ -91,8 +91,6 @@ async def delete(id:int):
     todos.delete(id)
     return clear(id_curr)
 ```
-
-This removes the todo from the database and clears it from the UI.
 
 ## Running Locally
 
