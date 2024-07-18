@@ -35,7 +35,7 @@ def get():
                 Form(Group(ChatInput(), Button("Send", cls="btn btn-primary")),
                     hx_post="/", hx_target="#chatlist", hx_swap="beforeend",
                     cls="flex space-x-2 mt-2",
-                ), cls="doodle p-4 max-w-lg mx-auto")
+                ), cls="p-4 max-w-lg mx-auto")
     return Title('Chatbot Demo'), page
 
 # Handle the form submission
