@@ -23,6 +23,8 @@ This project implements a simple Todo list application using FastHTML, showcasin
 
 FastHTML makes it easy to set up a database-backed application:
 
+TODO: Make sure to showcase how to create without fast_app (also what fast_app is)
+
 ```python
 app,rt,todos,Todo = fast_app(
     'data/todos.db',
@@ -30,7 +32,15 @@ app,rt,todos,Todo = fast_app(
     id=int, title=str, done=bool, pk='id')
 ```
 
-This single line sets up our app, routing, database connection, and Todo data model model.
+This single line sets up our app, routing, database connection, and Todo data model model using the `fast_app` function. However, you can use the standard `FastHTML` class to set up your app and `database` function from [`fastlite`](https://github.com/AnswerDotAI/fastlite) to create your database manually.
+
+```python
+app = FastHTML(hdrs=[Style(':root { --pico-font-size: 100%; }')])
+rt = app.route
+db = database(db)
+if 'Todo' not in db.t: db.t['Todo'].create(id=int, title=str, done=bool, pk='id')
+Todo = db.t['Todo'].dataclass()
+```
 
 ### Todo Item Rendering
 
