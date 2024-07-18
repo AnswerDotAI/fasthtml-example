@@ -38,67 +38,47 @@ def get():
                 Div(*[ChatMessage(msg) for msg in messages],
                     id="chatlist", cls="chat-box h-[73vh] overflow-y-auto"),
                 Form(Group(ChatInput(), Button("Send", cls="btn btn-primary")),
-                    hx_post="/", hx_target="#chatlist", hx_swap="beforeend",
+                    ws_send="", hx_ext="ws", ws_connect="/wscon",
                     cls="flex space-x-2 mt-2",
                 ), 
                 cls="doodle p-4 max-w-lg mx-auto",
-                hx_ext="ws", ws_connect="/wscon") # Open a websocket connection on page load
+                ) # Open a websocket connection on page load
     return Title('Chatbot Demo'), page
 
 
+@app.ws('/wscon')
+async def ws(msg:str, send): 
+    messages.append({"role":"user", "content":msg})
 
-open_websocket_sends = set()
+    # Send the user message to the user (updates the UI right away)
+    await send(Div(ChatMessage(len(messages)-1), hx_swap_oob='beforeend', id="chatlist"))
 
-async def update(chat_message):
-    to_remove = []
-    for send in open_websocket_sends:
-        try: await send(chat_message)
-        except: to_remove.append(send)
-    for send in to_remove:
-        open_websocket_sends.remove(send)
+    # Send the clear input field command to the user
+    await send(ChatInput())
 
-async def on_connect(send): open_websocket_sends.add(send)
-
-async def on_disconnect(send): open_websocket_sends.discard(send)
-
-@app.ws('/wscon', conn=on_connect, disconn=on_disconnect)
-async def ws(msg:str, send, request): 
-    # This function runs when a message is received on the websocket,
-    # which we don't need to handle in this example. Instead, we keep track
-    # of the send function so that we can send messages to the client
-    pass
-
-# Run the chat model in a separate thread
-async def get_response(idx):
+    # Get the response from the chat model and send that
 
     # Non-streaming:
-    # r = cli(messages[:idx], sp=sp) # Send past messages to chat model
-    # messages[idx]["content"] = contents(r) # Get response from chat model
-    # await update(ChatMessage(idx, hx_swap_oob='true')) # Update in the UI
+    # r = cli(messages, sp=sp)
+    # messages.append({"role":"assistant", "content":contents(r)})
+    # await send(Div(ChatMessage(len(messages)-1), hx_swap_oob='beforeend', id="chatlist"))
 
     # Streaming:
-    r = cli(messages[:idx], sp=sp, stream=True) # Send past messages to chat model
-    for chunk in r: 
-        messages[idx]["content"] += chunk
-
-        # Option 1: Update the whole message each chunk
-        # await update(ChatMessage(idx, hx_swap_oob='true'))
-
-        # Option 2: Add new chunks to the content as they come in
-        await update(Span(chunk, id=f"chat-content-{idx}", hx_swap_oob="beforeend"))
-
-        # Add this to test coping with a delay: await asyncio.sleep(0.5)
-
-# Handle the form submission
-@app.post("/")
-def post(msg:str):
     idx = len(messages)
-    messages.append({"role":"user", "content":msg})
-    messages.append({"role":"assistant", "content":""}) # Response initially blank
-    asyncio.create_task(get_response(idx+1)) # Start a task that will update the chat message
-    return (ChatMessage(idx), # The user's message
-            ChatMessage(idx+1), # The chatbot's response
-            ChatInput()) # And clear the input field via an OOB swap
+    r = cli(messages, sp=sp, stream=True)
+    # Empty message
+    messages.append({"role":"assistant", "content":""}) 
+    await send(Div(ChatMessage(idx), hx_swap_oob='beforeend', id="chatlist"))  
+    # Fill in the message content  
+    for chunk in r:
+        messages[idx]["content"] += chunk
+        await send(Span(chunk, id=f"chat-content-{idx}", hx_swap_oob="beforeend"))
+        # await asyncio.sleep(0.5) # Simulate a delay
+        
+
+
+    
+
 
 
 if __name__ == '__main__': uvicorn.run("ws:app", host='0.0.0.0', port=8000, reload=True)
