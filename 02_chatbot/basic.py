@@ -7,15 +7,16 @@ dlink = Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1
 app = FastHTML(hdrs=(tlink, dlink, picolink))
 
 # Set up a chat model (https://claudette.answer.ai/)
-chat = Chat(models[-1], sp="""You are a helpful and concise assistant.""")
+cli = Client(models[-1])
+sp = """You are a helpful and concise assistant."""
+messages = []
 
 # Chat message component (renders a chat bubble)
 def ChatMessage(msg):
-    text = msg['content'][0]['text'] if type(msg['content'][0]) == dict else msg['content'][0].text
     bubble_class = f"chat-bubble-{'primary' if msg['role'] == 'user' else 'secondary'}"
     chat_class = f"chat-{'end' if msg['role'] == 'user' else 'start'}"
     return Div(Div(msg['role'], cls="chat-header"),
-               Div(text, cls=f"chat-bubble {bubble_class}"),
+               Div(msg['content'], cls=f"chat-bubble {bubble_class}"),
                cls=f"chat {chat_class}")
 
 # The input field for the user message. Also used to clear the 
@@ -28,9 +29,9 @@ def ChatInput():
 # The main screen
 @app.route("/")
 def get():
-    chat.h = [] # Clear the chat history on refresh
     page = Body(H1('Chatbot Demo'),
-                Div(id="chatlist", cls="chat-box h-[73vh] overflow-y-auto"),
+                Div(*[ChatMessage(msg) for msg in messages],
+                    id="chatlist", cls="chat-box h-[73vh] overflow-y-auto"),
                 Form(Group(ChatInput(), Button("Send", cls="btn btn-primary")),
                     hx_post="/", hx_target="#chatlist", hx_swap="beforeend",
                     cls="flex space-x-2 mt-2",
@@ -40,9 +41,11 @@ def get():
 # Handle the form submission
 @app.post("/")
 def post(msg:str):
-    chat(msg) # Send the message to the chat model
-    return (ChatMessage(chat.h[-2]), # The user's message
-            ChatMessage(chat.h[-1]), # The chatbot's response
+    messages.append({"role":"user", "content":msg})
+    r = cli(messages, sp=sp) # get response from chat model
+    messages.append({"role":"assistant", "content":contents(r)})
+    return (ChatMessage(messages[-2]), # The user's message
+            ChatMessage(messages[-1]), # The chatbot's response
             ChatInput()) # And clear the input field via an OOB swap
 
 

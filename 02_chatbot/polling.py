@@ -11,6 +11,25 @@ cli = Client(models[-1])
 sp = """You are a helpful and concise assistant."""
 messages = []
 
+# Chat message component, polling if message is still being generated
+def ChatMessage(msg_idx):
+    msg = messages[msg_idx]
+    text = "..." if msg['content'] == "" else msg['content']
+    bubble_class = f"chat-bubble-{'primary' if msg['role'] == 'user' else 'secondary'}"
+    chat_class = f"chat-{'end' if msg['role'] == 'user' else 'start'}"
+    generating = 'generating' in messages[msg_idx] and messages[msg_idx]['generating']
+    stream_args = {"hx_trigger":"every 0.1s", "hx_swap":"outerHTML", "hx_get":f"/chat_message/{msg_idx}"}
+    return Div(Div(msg['role'], cls="chat-header"),
+               Div(text, cls=f"chat-bubble {bubble_class}"),
+               cls=f"chat {chat_class}", id=f"chat-message-{msg_idx}", 
+               **stream_args if generating else {})
+
+# Route that gets polled while streaming
+@app.get("/chat_message/{msg_idx}")
+def get_chat_message(msg_idx:int):
+    if msg_idx >= len(messages): return ""
+    return ChatMessage(msg_idx)
+
 # The input field for the user message. Also used to clear the 
 # input field after sending a message via an OOB swap
 def ChatInput():
@@ -21,32 +40,14 @@ def ChatInput():
 # The main screen
 @app.route("/")
 def get():
-    global messages; messages = [] # Clear the chat history on refresh
     page = Body(H1('Chatbot Demo'),
-                Div(id="chatlist", cls="chat-box h-[73vh] overflow-y-auto"),
+                Div(*[ChatMessage(msg) for msg in messages],
+                    id="chatlist", cls="chat-box h-[73vh] overflow-y-auto"),
                 Form(Group(ChatInput(), Button("Send", cls="btn btn-primary")),
                     hx_post="/", hx_target="#chatlist", hx_swap="beforeend",
                     cls="flex space-x-2 mt-2",
                 ), cls="doodle p-4 max-w-lg mx-auto")
     return Title('Chatbot Demo'), page
-
-# Chat message component (renders a chat bubble)
-def ChatMessage(msg_idx):
-    msg = messages[msg_idx]
-    bubble_class = f"chat-bubble-{'primary' if msg['role'] == 'user' else 'secondary'}"
-    chat_class = f"chat-{'end' if msg['role'] == 'user' else 'start'}"
-    generating = 'generating' in messages[msg_idx] and messages[msg_idx]['generating']
-    stream_args = {"hx_trigger":"every 0.1s", "hx_swap":"outerHTML", "hx_get":f"/chat_message/{msg_idx}"}
-    return Div(Div(msg['role'], cls="chat-header"),
-               Div(msg['content'], cls=f"chat-bubble {bubble_class}"),
-               cls=f"chat {chat_class}", id=f"chat-message-{msg_idx}", 
-               **stream_args if generating else {})
-
-# Route that gets polled while streaming
-@app.get("/chat_message/{msg_idx}")
-def get_chat_message(msg_idx:int):
-    if msg_idx >= len(messages): return ""
-    return ChatMessage(msg_idx)
 
 # Run the chat model in a separate thread
 @threaded
@@ -60,7 +61,7 @@ def post(msg:str):
     idx = len(messages)
     messages.append({"role":"user", "content":msg})
     r = cli(messages, sp=sp, stream=True) # Send message to chat model (with streaming)
-    messages.append({"role":"assistant", "generating":True, "content":""})
+    messages.append({"role":"assistant", "generating":True, "content":""}) # Response initially blank
     get_response(r, idx+1) # Start a new thread to fill in content
     return (ChatMessage(idx), # The user's message
             ChatMessage(idx+1), # The chatbot's response
