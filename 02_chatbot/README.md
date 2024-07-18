@@ -1,6 +1,10 @@
 # Chatbot Demo
 
-This example implements a simple chatbot, showcasing custom styling with [DaisyUI](https://daisyui.com/), along with some different approaches to handling the chat message updates. The chat functionality is handled by [claudette](https://claudette.answer.ai/), a friendly wrapper around the Anthropic API. There are three versions of the chatbot:
+This example implements a simple chatbot, showcasing custom styling with [DaisyUI](https://daisyui.com/), along with some different approaches to handling the chat message updates. The chat functionality is handled by [claudette](https://claudette.answer.ai/), a friendly wrapper around the Anthropic API. 
+
+![Screenshot of the chatbot](screenshot.png)
+
+There are three versions of the example:
 
 - `basic.py`: A minimal version of the app, showing the chat bubble styling as described in [this tutorial](https://fhdocs.answer.ai/by_example.html#full-example-3---chatbot-example-with-daisyui-components).
 - `polling.py`: Extending the basic chatbot with a polling mechanism so that the UI updates as soon as the user sends a message, and then streams the response from the chat model.
@@ -45,7 +49,7 @@ def ChatMessage(msg):
                cls=f"chat {chat_class}")
 ```
 
-Then in the main page, we make a Div (with the `chat-box ` class) that contains a list of chat messages, and a form with an input field and a submit button for the user to enter messages:
+Then in the main page, we make a Div (with the `chat-box` class) that contains a list of chat messages, and a form with an input field and a submit button for the user to enter messages:
 
 ```python
 @app.route("/")
