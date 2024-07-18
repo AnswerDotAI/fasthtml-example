@@ -120,13 +120,12 @@ For more on websockets, see the [htmx documentation](https://v1.htmx.org/extensi
 When streaming the response from the model, we could repeatedly send a chat message with the content so far, replacing the previous message. This looks fine but has some subtle issues, for example if the user starts selecting text while the message is still streaming in, the selection will be lost when the message is updated. Instead, we can add new content to the end of the message with something like this (as shown in `ws_streaming.py`):
 
 ```python
-# Fill in the message content  
-    for chunk in r:
-        messages[-1]["content"] += chunk
-        await send(Span(chunk, id=f"chat-content-{len(messages)-1}", hx_swap_oob="beforeend"))
+for chunk in r:
+    messages[-1]["content"] += chunk
+    await send(Span(chunk, id=f"chat-content-{len(messages)-1}", hx_swap_oob="beforeend"))
 ```
 
-A final note: in cases like this where the server sends multiple messages to the client, [Server Sent Events](https://v1.htmx.org/docs/#websockets-and-sse) might be a better choice than websockets.
+A final note: in cases like this where the server sends multiple messages to the client, [Server Sent Events](https://v1.htmx.org/docs/#websockets-and-sse) might be an even better choice than websockets.
 
 ## Extending this further
 
@@ -137,6 +136,4 @@ This example is missing a number of features we'd expect in a chatbot! Hopefully
 - Support markdown in the chat messages
 - ...
 
-
-
-
+If you build something cool, let us know!
