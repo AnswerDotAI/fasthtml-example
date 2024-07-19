@@ -1,8 +1,6 @@
 from fasthtml.common import *
 
-app,rt,todos,Todo = fast_app(
-    'data/todos.db',
-    hdrs=[Style(':root { --pico-font-size: 100%; }')],
+app,rt,todos,Todo = fast_app('data/todos.db',
     id=int, title=str, done=bool, pk='id')
 
 id_curr = 'current-todo'
@@ -23,8 +21,7 @@ async def get():
                hx_post="/", target_id='todo-list', hx_swap="beforeend")
     card = Card(Ul(*todos(), id='todo-list'),
                 header=add, footer=Div(id=id_curr)),
-    title = 'Todo list'
-    return Title(title), Main(H1(title), card, cls='container')
+    return Titled('Todo list', card)
 
 @rt("/todos/{id}")
 async def delete(id:int):
