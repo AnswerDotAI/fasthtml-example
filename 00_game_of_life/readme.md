@@ -115,4 +115,4 @@ To run the app locally:
 1. Clone the repository
 2. Navigate to the project directory
 3. Install dependencies (if any)
-4. Run the following command: `uvicorn main:app`
+4. Run the following command: `uvicorn main:app --reload`

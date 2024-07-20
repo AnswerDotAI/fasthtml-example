@@ -23,8 +23,6 @@ This project implements a simple Todo list application using FastHTML, showcasin
 
 FastHTML makes it easy to set up a database-backed application:
 
-TODO: Make sure to showcase how to create without fast_app (also what fast_app is)
-
 ```python
 app,rt,todos,Todo = fast_app(
     'data/todos.db',
