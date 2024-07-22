@@ -29,13 +29,17 @@ Key features:
 
 ## 3. Chatbot
 
-[Description of the Chatbot app - placeholder as no specific details were provided]
+![Chatbot Screenshot](02_chatbot/screenshot.png)
+
+A simple chatbot, showcasing custom styling with [DaisyUI](https://daisyui.com/) for the chat message bubbles. Includes different approaches to handling chat message updates.
 
 [View Chatbot App](02_chatbot/)
 
 ## 4. Pictionary
 
-[Description of the Pictionary app - placeholder as no specific details were provided]
+![Pictionary Screenshot](03_pictionary/haiku.gif)
+
+Sending user drawings to a multi-modal AI model for continuous captioning.
 
 [View Pictionary App](03_pictionary/)
 
