@@ -43,6 +43,10 @@ Sending user drawings to a multi-modal AI model for continuous captioning.
 
 [View Pictionary App](03_pictionary/)
 
+## Additional Examples
+
+The remaining examples are a collection of smaller demos and utilities showcasing various features of FastHTML. These are proof-of-concepts and demos rather than full-fledged applications, but should still show some useful patterns and techniques you can use in your own projects.
+
 ## Running the Apps
 
 Each app is contained in its own directory. To run an app:
