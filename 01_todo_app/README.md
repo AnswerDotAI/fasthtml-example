@@ -35,7 +35,7 @@ This single line sets up our app, routing, database connection, and Todo data mo
 ```python
 app = FastHTML(hdrs=[Style(':root { --pico-font-size: 100%; }')])
 rt = app.route
-db = database(db)
+db = database('todos.db')
 if 'Todo' not in db.t: db.t['Todo'].create(id=int, title=str, done=bool, pk='id')
 Todo = db.t['Todo'].dataclass()
 ```
