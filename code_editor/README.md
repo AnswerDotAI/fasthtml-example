@@ -1,6 +1,6 @@
-# Chess Example
+# Code Editor Example
 
-Minimal example showing how to have a multiplayer chess game. Uses websockets to allow for real-time updates.
+Minimal example showing how to have a web based code editor. This example also shows how you can separate out your code into components inspired by React.
 
 ## Setup
 
