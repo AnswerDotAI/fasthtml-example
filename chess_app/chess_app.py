@@ -126,3 +126,6 @@ async def put(move: str):
     cboard.push_san(move)
     for player in player_queue:
         await player.send_text(to_xml(Board()))
+
+
+run_uv()
