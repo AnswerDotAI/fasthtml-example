@@ -1,0 +1,2 @@
+fireworks-ai
+python-dotenv
