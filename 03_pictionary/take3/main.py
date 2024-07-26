@@ -480,8 +480,8 @@ def spectate():
 # TODO - game stats once we have enough games
 @app.get('/stats')
 def stats():
-  return Title("AI Pictionary"), Body(
-      Navbar(page='stats'),
+  return Title("Moodle"), Body(
+      Navbar('stats'),
       Div(
         H1('Stats'),
         P("Coming soon: stats on which models play best!"),
@@ -508,10 +508,11 @@ will make a good classification problem. Can a model guess from the final image?
 
 @app.get('/about')
 def about():
-  return Title("About"), Navbar("about"), Body(
-      Div(about_md, cls='marked', style='text-align: left;'),
-      A("Back to Home", href="/"),
-      cls='content')
+  return Title("About"), Body(
+        Navbar("about"),
+        Div(about_md, cls='marked', style='text-align: left;'),
+        A("Back to Home", href="/"),
+        cls='content')
 
 
 # For images, CSS, etc.
