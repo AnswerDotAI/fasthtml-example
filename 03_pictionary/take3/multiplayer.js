@@ -214,42 +214,6 @@ function sendCanvasData() {
     });
 }
 
-// COUNTDOWN TIMER
-// function updateCountdown() {
-//     let timeLeftElement = document.getElementById("time-left");
-//     let progressElement = document.getElementById("progress");
-//     let containerElement = document.getElementById("countdown-container");
-
-//     if (!timeLeftElement || !progressElement) return;
-
-//     let start = parseFloat(document.getElementById("start-time").value);
-//     let elapsed = Math.floor(Date.now() / 1000) - start;
-//     let max_duration = parseFloat(document.getElementById("game-max-duration").value);
-//     let time = Math.max(0, max_duration - elapsed);
-//     let percentage = (time / max_duration) * 100;
-
-//     timeLeftElement.innerText = `Time left: ${Math.floor(time)} seconds`;
-//     progressElement.style.width = `${percentage}%`;
-
-//     // Add urgency effects
-//     if (percentage <= 25) {
-//         progressElement.classList.add('urgent');
-//         containerElement.classList.add('urgency');
-//     } else {
-//         progressElement.classList.remove('urgent');
-//         containerElement.classList.remove('urgency');
-//     }
-
-//     if (time <= 0) {
-//         console.log("Time's up!");
-//         htmx.ajax('GET', '/endgame', {target:'#active-area', swap:'outerHTML'});
-//         clearInterval(countdownInterval);
-//     }
-// }
-
-// Initialize the countdown
-// let countdownInterval = setInterval(updateCountdown, 100); // Update every 100ms for smoother animation
-
 // Countdonw timer
 setInterval(() => {
     let timeLeftElement = document.getElementById("time-left");

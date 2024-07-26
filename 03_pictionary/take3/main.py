@@ -8,7 +8,6 @@ from dataclasses import dataclass
 # Settings
 max_concurrent_games = 2
 game_max_duration = 30
-# game_max_duration += 4 # 3...2...1...GO! in the JS before the canvas starts accepting input
 thread_debug = False
 domain = "https://moodle-game.com"
 
@@ -45,15 +44,7 @@ css = Style(open('multiplayer.css').read(), type="text/css", rel="stylesheet")
 js = Script(open('multiplayer.js').read())
 confetti = Script(src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js")
 sakura = Style(open('modified_sakura.css').read(), type="text/css", rel="stylesheet")
-# override sakura body max-width and center content
-mod = Style("""
-body { 
-max-width: 960px; 
-margin: 0 auto;
-text-align: center;
-}
-""", type="text/css")
-app = FastHTML(hdrs=[css, sakura, js, mod, confetti, MarkdownJS()], before=bware)
+app = FastHTML(hdrs=[css, sakura, js, confetti, MarkdownJS()], before=bware)
 
 # Set up the database with the tables we need
 db = database('pictionary.db')
@@ -111,7 +102,6 @@ def Navbar(page="home"):
             aria_label='Toggle Navigation',
             cls='navbar-toggle'
         ),
-        Div(id="endgame"), # Hidden div for endgame redirect
         cls='navbar',
     )
 
@@ -121,7 +111,8 @@ def Navbar(page="home"):
 def home(session):
   return Title("Moodle"), Body(
         Navbar(),
-        Div(
+        Div(id="endgame"), # Hidden div for endgame redirect
+        Div( # Most of the action is in the active area
             active_area(session),
             cls='content'
         ))
@@ -139,7 +130,6 @@ def active_area(session, last_game_id:int=None):
         active_game = [game for game in active_games if game.player == session['sid']][0]
         return Div(
             H2("Now Drawing: " + active_game.word, id="active-header"),
-            # P(f"Active game {active_game.id}"), # TODO
             P("Draw as best you can in the time remaining!", id="active-subheader"),
             Div(
                 countdown(active_game.start_time),
@@ -182,10 +172,7 @@ def active_area(session, last_game_id:int=None):
             id="active-area")
         return status
 
-    # TODO: show leaderboard form if they're a top scorer
-
-    # show previous games and stats if they've played before ("Play Again")
-    # last_game_id = 123 # for testing
+    # show previous games info if they've just played ("Play Again")
     btn_style = "width:300px; margin: 0.5rem;"
     if last_game_id is not None:
         return Div(
@@ -205,7 +192,7 @@ def active_area(session, last_game_id:int=None):
     intro = P("Welcome to Moodle!",
               "Put your drawing skills to the test while a team of AI models try to guess your word.",
               style="max-width: 600px; margin: 0 auto; text-align: center;")
-    return Div(Br(), intro, Br(), # <<< TODO restyle this
+    return Div(Br(), intro, Br(),
                 P("Are you ready?"),
                 Form(Button("Play Game!",type="submit"), hx_post="/join",
                     hx_target="#active-area",hx_swap="outerHTML"),
@@ -214,8 +201,6 @@ def active_area(session, last_game_id:int=None):
 @app.get('/guesses')
 def get_recent_guesses(session):
     global recent_guesses
-    # print("Getting recent guesses")
-    # print(recent_guesses)
     if not active_games or session['sid'] not in [game.player for game in active_games]:
         return ""
     game = [game for game in active_games if game.player == session['sid']][0]
@@ -238,7 +223,7 @@ def get_recent_guesses(session):
         # Could make this a script that uses htmx.ajax in a Timeout instead of using a hidden div
         gs.append(Hidden("endgame", hx_get=f"/active_area?last_game_id={game.id}", hx_target="#active-area", 
                          hx_trigger="load delay:3s",hx_swap="outerHTML", id="endgame", hx_swap_oob="outerHTML"))
-        _ = end_game(game)
+        end_game(game)
     return *gs, ""
 
 # JS: Countdown timer that navigates to /end-game when time is up
@@ -256,7 +241,7 @@ def countdown(start_time):
         # See script for countdown timer javascript
         id="countdown-container", cls="actitem countdown")
 
-# Ends game (if one running for this player) and redirects to summary
+# Ends game (if one running for this player) - called from JavaScript when countdown ends
 @app.get("/endgame")
 def end(session):
     # Check if there's an active game
@@ -368,30 +353,31 @@ def join(session):
 @app.get('/leaderboard')
 def leaderboard():
     # TODO top 5 of the day maybe?
-  fastest_games = games(where="end_time IS NOT NULL",
+    fastest_games = games(where="end_time IS NOT NULL",
                         order_by="(end_time - start_time) ASC",
                         limit=10)
-  rows = []
-  for i, game in enumerate(fastest_games, 1):
-    duration = game.end_time - game.start_time
-    player_name = game.player_name if game.player_name else "Anonymous"
-    rows.append(
-        Tr(Td(str(i)), Td(player_name), Td(game.word),
-           Td(f"{duration:.2f} seconds"),
-           Td(A("View", href=f"/game-summary?game_id={game.id}"))))
+    rows = []
+    for i, game in enumerate(fastest_games, 1):
+        duration = game.end_time - game.start_time
+        player_name = game.player_name if game.player_name else "Anonymous"
+        rows.append(
+            Tr(Td(str(i)), Td(player_name), Td(game.word),
+            Td(f"{duration:.2f} seconds"),
+            Td(A("View", href=f"/game-summary?game_id={game.id}"))))
 
-  table = Table(Thead(
-      Tr(Th("Rank"), Th("Player"), Th("Word"), Th("Duration"),
-         Th("Details"))),
-                Tbody(*rows),
-                cls="table table-striped table-hover")
+    table = Table(Thead(
+        Tr(Th("Rank"), Th("Player"), Th("Word"), Th("Duration"),
+            Th("Details"))),
+                    Tbody(*rows),
+                    cls="table table-striped table-hover")
 
-  return Title("Leaderboard - Fastest Games"),  Navbar("leaderboard"),  Main(
-      H1("Top 10 Fastest Games:", style="text-align: left;"),
-      table,
-      A("Back to Home", href="/"),
-      cls='container')
+    return Title("Leaderboard - Fastest Games"),  Navbar("leaderboard"),  Main(
+            H1("Top 10 Fastest Games:", style="text-align: left;"),
+            table,
+            A("Back to Home", href="/"),
+            cls='container')
 
+# Ask for nickname if relevant - shown in game summary and play again screen
 def nickname_form(session, game):
     is_player = session['sid'] == game.player
     nickname_form = ""
@@ -430,12 +416,7 @@ def game_summary_page(game_id: int, session):
                         href=twitter_url,
                         target="_blank",
                         cls="btn btn-primary twitter-s`hare-button"),
-            P(""),)
-
-    # If this is a top 10 game and they don't have a nickname, prompt them to set one
-    
-    
-        
+            P(""),)   
     content = [
         H3(f"Game {game_id} Summary"),
         P(f"Word: {game.word}"),
@@ -461,25 +442,21 @@ def game_summary_page(game_id: int, session):
       *content,
       cls='container')
 
-    # return Html(
-    #     Head(confetti, sakura, js, css, mod, *metas, Title(f"Game {game_id} Summary")),
-    #     Body(Navbar("summary"), *content, cls='container'))
-
-# In the summary page, you can set a nickname for the leaderbaord
+# When they set a nickname for the leaderbaord
 @app.post("/save-nickname/{game_id}")
 def save_nickname(game_id: int, nickname: str, session):
-  game = games[game_id]
-  if session['sid'] == game.player:
-    game.player_name = nickname
-    games.update(game)
-    session['nickname'] = nickname
-    return P(f"Player: {game.player_name}")
-  else:
-    return P("You are not authorized to set a nickname for this game.")
+    game = games[game_id]
+    if session['sid'] == game.player:
+        game.player_name = nickname
+        games.update(game)
+        session['nickname'] = nickname
+        return P(f"Player: {game.player_name}")
+    else:
+        return P("You are not authorized to set a nickname for this game.")
 
 @app.get("/past-games-area")
 def past_games_area(page:int=1):
-   # Infinite scroll sort of deal
+   # Infinite scroll sort of deal, but with button to load more
     games_list = games(where="end_time IS NOT NULL", order_by="end_time DESC", limit=10, offset=(page-1)*10)
     content = Div(*[Img(src=f"/{game.game_gif}", alt=f"game {game.id}") for game in games_list if game.game_gif], id="past-games")
     new_btn = Button("Load More", hx_get=f"/past-games-area?page={page+1}", hx_target="#past-games-area", hx_swap="beforeend",
@@ -500,6 +477,7 @@ def spectate():
         )
     )
 
+# TODO - game stats once we have enough games
 @app.get('/stats')
 def stats():
   return Title("AI Pictionary"), Body(
@@ -695,8 +673,9 @@ class BackgroundTask(threading.Thread):
                     if thread_debug: print(f"Game idx {self.game_idx} guess by {guesser_name}: {guess_text} (correct: {is_correct})")
                 except Exception as e:
                     print(f"Error: {e}")
-
-            time.sleep(max(0, self.interval - (time.time() - start_time)))
+            
+            # Sleep for the remaining time with a bit of randomness added
+            time.sleep(max(0, self.interval - (time.time() - start_time)) + random.random() * 0.5)
 
         if thread_debug: print(f"Task {self.task_name} is stopping")
         return True
@@ -717,7 +696,6 @@ def start_background_tasks():
     tasks.append(BackgroundTask('game_ender', stop_event, game_ender, interval=1))
     for task in tasks:
         task.start()
-        # time.sleep(0.5) # Stagger the starts
 
 def stop_background_tasks():
     print("Stopping all tasks...")

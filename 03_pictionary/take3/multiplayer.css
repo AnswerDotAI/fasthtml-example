@@ -1,7 +1,12 @@
+body { 
+    max-width: 960px; 
+    margin: 0 auto;
+    text-align: center;
+}
+
 /* latest guess */
 #latest-guess {
     font-size: 1.2em;
-    /* padding: 10px; */
     border-radius: 5px;
     transition: all 0.3s ease;
 }
