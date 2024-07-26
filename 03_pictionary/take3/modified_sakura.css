@@ -87,11 +87,13 @@ html {
   a {
     text-decoration: none;
     color: #7575F0;
+    padding-bottom: 2px;
   }
 
   a:hover {
     color: #E699D9;
     border-bottom: 2px solid #4a4a4a;
+    padding-bottom: 0px; /* Stop border from changing height */
   }
   
   ul {

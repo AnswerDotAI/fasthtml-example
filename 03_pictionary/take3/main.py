@@ -7,10 +7,35 @@ from dataclasses import dataclass
 
 # Settings
 max_concurrent_games = 2
-game_max_duration = 100
+game_max_duration = 30
 # game_max_duration += 4 # 3...2...1...GO! in the JS before the canvas starts accepting input
 thread_debug = False
-domain = "http://localhost:8000"
+domain = "https://moodle-game.com"
+
+# Wordlist
+words = ['lips', 'caterpillar', 'ants', 'jellyfish', 'cupcake', 'seashell', 'grass', 'island', 'coat', 'bee', 
+ 'eye', 'lion', 'car', 'bus', 'boy', 'knee', 'bathroom', 'ball', 'jacket', 'flag', 'snowflake', 'football', 
+ 'grapes', 'bumblebee', 'music', 'book', 'lemon', 'dragon', 'dream', 'eyes', 'balloon', 'triangle', 'sunglasses', 'zebra', 
+ 'feet', 'ant', 'bed', 'rocket', 'river', 'candle', 'float', 'smile', 'alligator', 'bunny', 'plant', 'snake', 'bird', 'duck', 
+ 'kitten', 'earth', 'starfish', 'ear', 'monkey', 'lollipop', 'sun', 'branch', 'blanket', 'orange', 'carrot', 'cube', 'dinosaur', 
+ 'hippo', 'candy', 'jail', 'cow', 'drum', 'hamburger', 'hat', 'light', 'inchworm', 'snail', 'cat', 'shirt', 'nose', 'alive', 
+ 'person', 'jar', 'tail', 'motorcycle', 'whale', 'zigzag', 'suitcase', 'backpack', 'feather', 'line', 'mitten', 'woman', 'robot', 
+ 'cheese', 'chimney', 'comb', 'egg', 'worm', 'zoo', 'pizza', 'fly', 'pen', 'coin', 'apple', 'baseball', 'oval', 'skateboard', 'frog', 
+ 'spoon', 'horse', 'beach', 'slide', 'ladybug', 'window', 'rabbit', 'helicopter', 'desk', 'head', 'leg', 'crayon', 'clock', 'boat', 
+ 'diamond', 'bug', 'ears', 'box', 'face', 'night', 'square', 'pie', 'bear', 'finger', 'banana', 'mouth', 'nail', 'cherry', 'bike', 
+ 'broom', 'fire', 'sea', 'beak', 'baby', 'bowl', 'popsicle', 'lamp', 'blocks', 'bark', 'elephant', 'spider', 'rock', 'purse', 'leaf', 
+ 'ship', 'shoe', 'kite', 'mountains', 'moon', 'table', 'rain', 'sheep', 'curl', 'daisy', 'snowman', 'train', 'legs', 'swing', 'mountain', 
+ 'cup', 'truck', 'flower', 'glasses', 'crab', 'owl', 'ring', 'love', 'lizard', 'door', 'heart', 'button', 'giraffe', 'chicken', 
+ 'chair', 'bridge', 'key', 'neck', 'ghost', 'computer', 'bow', 'bread', 'corn', 'water', 'angel', 'fork', 'bone', 'candy', 'roof', 
+ 'underwear', 'drum', 'spider', 'shoe', 'smile', 'cup', 'hat', 'bird', 'kite', 'snowman', 'doll', 'skateboard', 'sleep', 'sad', 
+ 'butterfly', 'elephant', 'ocean', 'book', 'egg', 'house', 'dog', 'ball', 'star', 'shirt', 'cookie', 'fish', 'bed', 'phone', 'airplane', 'nose', 
+ 'apple', 'sun', 'sandwich', 'cherry', 'bubble', 'moon', 'snow', 'rocket', 'cliff', 'stingray', 'horse', 'sack', 'paper', 'drumstick', 'teapot', 
+ 'plug', 'button', 'cave', 'crumb', 'children', 'bib', 'panda', 'unite', 'eel', 'cocoon', 'cook', 'city', 'stove', 'apologize', 'maze', 
+ 'sunset', 'step', 'organ', 'jump', 'ribbon', 'pizza', 'pop', 'tape', 'pot', 'table', 'calendar', 
+ 'squirrel', 'letter', 'coconut', 'napkin', 'hero', 'newborn', 'doghouse', 'baby', 'turkey', 'cheetah', 'sidekick', 
+ 'cucumber', 'crust', 'sunglasses', 'computer', 'scar', 'stick', 'grill', 'rat', 'teacher', 'farm', 'tusk',
+ 'lung', 'lock', 'refrigerator', 'ambulance', 'ship', 'harmonica', 'soda', 'eagle', 'rainstorm', 'hoof', 'fern', 
+ 'platypus', 'pitchfork', 'pinecone', 'pencil', 'parent','trombone', 'midnight', 'sap', 'pharaoh','panda']
 
 # App
 def before(session):
@@ -48,7 +73,7 @@ player_queue = OrderedDict()
 active_games = []
 recent_guesses = []
 def start_game(player_id):
-    word = random.choice(["apple", "house", "cat", "sun", "tree"])
+    word = random.choice(words)
     with db_lock:
         game = games.insert(Game(word=word, player=player_id, start_time=time.time()))
     active_games.append(game)
@@ -209,6 +234,7 @@ def get_recent_guesses(session):
         if guess['correct']:
             game_ended = True
     if game_ended:
+        # Could make this a script that uses htmx.ajax in a Timeout instead of using a hidden div
         gs.append(Hidden("endgame", hx_get=f"/active_area?last_game_id={game.id}", hx_target="#active-area", 
                          hx_trigger="load delay:3s",hx_swap="outerHTML", id="endgame", hx_swap_oob="outerHTML"))
         _ = end_game(game)
@@ -450,7 +476,7 @@ LLMs could play pictionary. It turns out they can! And it's rather fun...
 This app is built with a new framework we're working on - [FastHTML](https://fastht.ml). It's a Python framework 
 that makes it easy to build web apps with Python and HTML. It's still in development, but it's already pretty powerful!
           
-The canvas (HTML/JS) sends images to the backend, which ships them off to a few different models to guess the word.
+The canvas (HTML/JS) sends images to the backend, which ships them off to a few different models that try to guess the word.
           
 ### Future Plans
           
@@ -553,7 +579,7 @@ def random_guess(image_fn, guess_history=None):
   if guess_history:
     all_guesses = [g['guess'] for g in guess_history]
     print("(random) all past guesses:)", all_guesses)
-  return 'Random', random.choice(["apple", "house", "cat", "sun", "tree"])
+  return 'Random', random.choice(words)
 
 # There's also a thread prunes players from the queue if they've not checked in for a while
 def queue_pruner():
