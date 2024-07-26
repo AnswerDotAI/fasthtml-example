@@ -1,0 +1,6 @@
+python-fasthtml
+pillow
+openai
+anthropic
+google-generativeai
+
