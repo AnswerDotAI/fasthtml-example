@@ -404,11 +404,11 @@ def game_summary_page(game_id: int, session):
         share_url = domain + f"/game-summary?game_id={game_id}"
         twitter_url = f"https://twitter.com/intent/tweet?text={share_text}&url={share_url}"
         twitter_share = Div(
-            P("Show off your prowess on X/Twitter:",
+            P("Show off your prowess on X/Twitter:"),
             A(Button("Share Game"),
                         href=twitter_url,
                         target="_blank",
-                        cls="btn btn-primary twitter-s`hare-button")),
+                        cls="btn btn-primary twitter-s`hare-button"),
             P(""),)
     content = [
         H3(f"Game {game_id} Summary"),
@@ -428,9 +428,13 @@ def game_summary_page(game_id: int, session):
         Meta(name="twitter:image", content=f"{domain}/{game.game_gif}" if game.game_gif else f"{domain}/{game.last_drawing}"),
     ]
 
-    return Html(
-        Head(confetti, sakura, js, css, *metas, Title(f"Game {game_id} Summary")),
-        Body(Navbar("summary"), Main(*content), cls='container'))
+    return Title("Moodle Game Summary"), *metas, Navbar("leaderboard"),  Main(
+      *content,
+      cls='container')
+
+    # return Html(
+    #     Head(confetti, sakura, js, css, mod, *metas, Title(f"Game {game_id} Summary")),
+    #     Body(Navbar("summary"), *content, cls='container'))
 
 @app.get("/past-games-area")
 def past_games_area(page:int=1):

@@ -43,10 +43,10 @@ htmx.onLoad(elt => {
         canvas.addEventListener('mouseup', stopDrawing);
         canvas.addEventListener('mousemove', draw);
 
-        // Touch events
-        canvas.addEventListener('touchstart', handleStart, {passive: true});
+        // Touch events (no {passive: true} since we want to stop scroll)
+        canvas.addEventListener('touchstart', handleStart);
         canvas.addEventListener('touchend', handleEnd);
-        canvas.addEventListener('touchmove', handleMove, {passive: true});
+        canvas.addEventListener('touchmove', handleMove);
         
     });
 
