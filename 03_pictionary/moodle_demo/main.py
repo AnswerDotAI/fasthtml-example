@@ -44,7 +44,7 @@ css = Style(open('multiplayer.css').read(), type="text/css", rel="stylesheet")
 js = Script(open('multiplayer.js').read())
 confetti = Script(src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js")
 sakura = Style(open('modified_sakura.css').read(), type="text/css", rel="stylesheet")
-app = FastHTML(hdrs=[css, sakura, js, confetti, MarkdownJS()], before=bware)
+app = FastHTML(hdrs=[sakura, css, js, confetti, MarkdownJS()], before=bware)
 
 # Set up the database with the tables we need
 db = database('pictionary.db')
@@ -102,6 +102,7 @@ def Navbar(page="home"):
             aria_label='Toggle Navigation',
             cls='navbar-toggle'
         ),
+        Div(id="endgame"), # Hidden div for endgame redirect
         cls='navbar',
     )
 
@@ -111,7 +112,6 @@ def Navbar(page="home"):
 def home(session):
   return Title("Moodle"), Body(
         Navbar(),
-        Div(id="endgame"), # Hidden div for endgame redirect
         Div( # Most of the action is in the active area
             active_area(session),
             cls='content'
@@ -134,13 +134,13 @@ def active_area(session, last_game_id:int=None):
             Div(
                 countdown(active_game.start_time),
                 Div("NO GUESSES YET", id="latest-guess", cls="actitem latestguess",
-                style="border: 10px solid green; width: 350px;"),
+                style="border: 10px solid #4CAF50; width: 350px;"),
                 Canvas(id="drawingCanvas", width="512", height="512", cls='actitem canvas'), # TODO style this
                 Div(Div(B("Recent guesses:"), cls="guess", style="margin-bottom: 0.5rem;"),
                     Div(id="guess-area",
                         hx_trigger="every 0.3s", hx_get="/guesses", 
                         hx_target="#guess-area", hx_swap="afterbegin"),
-                    style="border: 10px solid red; height: 512px; width: 350px; overflow-y: auto; text-align: left;",
+                    style="border: 10px solid #FF4136; height: 512px; width: 350px; overflow-y: auto; text-align: left;",
                     cls="actitem guessarea",
                 ),
                 cls="actcontainer", 
@@ -246,7 +246,11 @@ def countdown(start_time):
 def end(session):
     # Check if there's an active game
     if not active_games or not session['sid'] in [game.player for game in active_games]:
-        return P("No active games. Return ", A("home", href="/", style="color: black;"))
+        # Usually here after the countdown ends
+        return Div(Br(), P("You ran out of time!"),
+                   Form(Button("Play Again?",type="submit"), hx_post="/join",
+                        hx_target="#active-area",hx_swap="outerHTML"),
+                   id="active-area")
 
     # End the game
     game = [game for game in active_games if game.player == session['sid']][0]

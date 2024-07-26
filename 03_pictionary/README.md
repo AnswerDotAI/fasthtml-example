@@ -1,10 +1,10 @@
 # AI Pictionary
 
-This example shows a drawing app that uses some custom javascript for the drawing canvas and an AI model that processes the resulting drawings.
+This example shows a drawing app that uses some custom JavaScript for the drawing canvas and an AI model that processes the resulting drawings.
 
 ![In Action](haiku.gif)
 
-There is also a more complex version (still a work in progress) included in the 'multiplayer_prototype' folder, with a queue system, game replays, multiple models guessing at the same time, and more. This example will likely be updated soon.
+There is also a more complex version (still a work in progress) included in the 'moodle_demo' folder, with a queue system, game replays, multiple models guessing at the same time, and more. You can play with the resulting app at [moodle-game.com](https://moodle-game.com/).
 
 ## Running the app
 
@@ -64,8 +64,7 @@ async def process_canvas(image: str):
 
 ## Getting Fancy
 
-The obvious next step was to turn this into a game of pictionary! We'll have a video up soon showing the current state, and hopefully a more polished version will be along not long after that. The current messy code is included in the 'multiplayer_prototype' folder for the curious, and results in an app that looks like this:
+The obvious next step was to turn this into a game of Pictionary! Here's what the current (work in progress) app looks like:
 
-![In Action](in_action.gif)
+![In Action](moodle_demo.gif)
 
-The extra functionality was relatively easy to add thanks to FastHTML, although no library can save you from bad styling or messy AI-generated code - hence the need for a bit of a refactor before this is ready for prime time ;)
