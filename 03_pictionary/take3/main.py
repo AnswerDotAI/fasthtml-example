@@ -192,6 +192,7 @@ def active_area(session, last_game_id:int=None):
                     P(""),
                     P(f"Game {last_game_id} finished in {games[last_game_id].end_time - games[last_game_id].start_time:.2f} seconds."),
                     Div(
+                        Div(nickname_form(session, games[last_game_id]), id='nickname-area'), # Prompt for name if on leaderboard
                         A(Button("View game summary",  style=btn_style), href=f"/game-summary?game_id={last_game_id}",
                         style="border-bottom: 0px;"),
                         Form(Button("Play Again!",type="submit", style=btn_style), hx_post="/join",
@@ -391,15 +392,35 @@ def leaderboard():
       A("Back to Home", href="/"),
       cls='container')
 
+def nickname_form(session, game):
+    is_player = session['sid'] == game.player
+    nickname_form = ""
+    if is_player and not game.player_name:
+        if 'nickname' in session:
+            with db_lock:
+                game.player_name = session['nickname']
+                games.update(game)
+        else: # need a nickname from them
+            top_10 = games(where="end_time IS NOT NULL", order_by="(end_time - start_time) ASC", limit=10)
+            if game in top_10:
+                nickname_form = Div(
+                    P("You're in the top 10! Set a nickname for the leaderboard:"),
+                    Form(Input(type="text",name="nickname", placeholder="Enter your nickname"),
+                            Input(type="submit", value="Save Nickname"),
+                            hx_post=f"/save-nickname/{game.id}",
+                            hx_target="#nickname-area"),
+                )
+    return nickname_form
+
 @app.get('/game-summary')
 def game_summary_page(game_id: int, session):
     game = games[game_id]
     is_player = session['sid'] == game.player
     gif = Img(src=f"/{game.game_gif}", width=840, height=512) if game.game_gif else ""
     gs = [Li(f"{guess.guesser} guessed: {guess.guess}" + (" (correct!)" if guess.guess == game.word else "")) for guess in guesses(where=f'game={game_id}')]
+    # Create Twitter share button if the player is viewing their own game
     twitter_share = ""
     if session['sid'] == game.player:
-        # Create Twitter share button
         share_text = f"I just drew '{game.word}' in {game.end_time - game.start_time:.2f} seconds on Moodle! Can you beat my time?"
         share_url = domain + f"/game-summary?game_id={game_id}"
         twitter_url = f"https://twitter.com/intent/tweet?text={share_text}&url={share_url}"
@@ -410,11 +431,19 @@ def game_summary_page(game_id: int, session):
                         target="_blank",
                         cls="btn btn-primary twitter-s`hare-button"),
             P(""),)
+
+    # If this is a top 10 game and they don't have a nickname, prompt them to set one
+    
+    
+        
     content = [
         H3(f"Game {game_id} Summary"),
         P(f"Word: {game.word}"),
-        # P(f"Number of guesses: {len(gs)}"),
         P(f"Game duration: {game.end_time - game.start_time:.2f} seconds") if game.end_time else P("Game still active."),
+        Div(
+            P(f"Player: {game.player_name}") if game.player_name else "",
+            nickname_form(session, game),
+            id="nickname-area"),
         twitter_share,
         gif
     ]
@@ -435,6 +464,18 @@ def game_summary_page(game_id: int, session):
     # return Html(
     #     Head(confetti, sakura, js, css, mod, *metas, Title(f"Game {game_id} Summary")),
     #     Body(Navbar("summary"), *content, cls='container'))
+
+# In the summary page, you can set a nickname for the leaderbaord
+@app.post("/save-nickname/{game_id}")
+def save_nickname(game_id: int, nickname: str, session):
+  game = games[game_id]
+  if session['sid'] == game.player:
+    game.player_name = nickname
+    games.update(game)
+    session['nickname'] = nickname
+    return P(f"Player: {game.player_name}")
+  else:
+    return P("You are not authorized to set a nickname for this game.")
 
 @app.get("/past-games-area")
 def past_games_area(page:int=1):
