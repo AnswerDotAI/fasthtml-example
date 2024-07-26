@@ -1,0 +1,169 @@
+/* latest guess */
+#latest-guess {
+    font-size: 1.2em;
+    /* padding: 10px; */
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.guess-animation {
+    animation: popIn 0.5s ease-out;
+}
+
+.correct-guess {
+    background-color: #4CAF50;
+    color: white;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.guesses-container {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.guess {
+    margin-bottom: 5px;
+    padding: 5px;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+}
+
+.guess:hover {
+    background-color: #f0f0f0;
+}
+
+/* countdown */
+#countdown-container {
+    width: 100%;
+    max-width: 492px;
+    margin-top: 0 auto;
+    text-align: center;
+    padding: 10px;
+}
+
+#progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+#progress {
+    width: 100%;
+    height: 100%;
+    background-color: #4CAF50;
+    transition: width 0.1s linear;
+}
+
+#time-left {
+    margin-top: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.urgency {
+    animation: pulse 1s infinite;
+}
+
+.urgent {
+    background-color: #FF4136 !important;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: #3a2234;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 1rem;
+}
+
+.navbar-toggle {
+    display: none;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+}
+
+.navbar-title {
+    font-size: 2.5rem;
+}
+
+@media (max-width: 767px) {
+    .navbar-toggle {
+        display: block;
+    }
+
+    .navbar-links {
+        display: none;
+        /* width: 100%; */
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: #3a2234;
+        padding: 1rem;
+    }
+
+    .navbar-links.active {
+        display: flex;
+    }
+
+    .navbar-links a {
+        padding: 0.5rem 0;
+    }
+}
+
+/* Active area container */
+.actcontainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Space between items */
+}
