@@ -16,7 +16,7 @@ app,rt,(users,User),(todos,Todo) = fast_app(
     todos=dict(id=int, title=str, done=bool, name=str, details=str, priority=int, pk='id'))
 
 @patch
-def __xt__(self:Todo):
+def __ft__(self:Todo):
     show = AX(self.title, f'/todos/{self.id}', 'current-todo')
     edit = AX('edit',     f'/edit/{self.id}' , 'current-todo')
     dt = ' (done)' if self.done else ''

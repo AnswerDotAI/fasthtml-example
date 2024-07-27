@@ -9,7 +9,7 @@ id_curr = 'current-todo'
 def tid(id): return f'todo-{id}'
 
 @patch
-def __xt__(self:Todo):
+def __ft__(self:Todo):
     show = AX(self.title, f'/todos/{self.id}', id_curr)
     edit = AX('edit',     f'/edit/{self.id}' , id_curr)
     dt = ' ✅' if self.done else ''

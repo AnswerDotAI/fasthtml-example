@@ -46,7 +46,7 @@ Each todo item is rendered as an HTML component:
 
 ```python
 @patch
-def __xt__(self:Todo):
+def __ft__(self:Todo):
     show = AX(self.title, f'/todos/{self.id}', id_curr)
     edit = AX('edit',     f'/edit/{self.id}' , id_curr)
     dt = ' ✅' if self.done else ''
@@ -108,3 +108,4 @@ To run the app locally:
 2. Navigate to the project directory
 3. Install dependencies (if any)
 4. Run the following command: `python main.py`
+

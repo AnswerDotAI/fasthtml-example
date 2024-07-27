@@ -41,7 +41,7 @@ def logout(sess):
     return redir()
 
 @patch
-def __xt__(self:Todo):
+def __ft__(self:Todo):
     show = AX(self.title, f'/todo/{self.id}', 'current-todo')
     edit = AX('edit',     f'/edit/{self.id}', 'current-todo')
     dt = '✅ ' if self.done else ''
