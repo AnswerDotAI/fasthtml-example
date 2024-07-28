@@ -9,5 +9,5 @@ def home(): return Titled('Hello world', P('Greetings from FastHTML'))
 @rt("/")
 def get(): return home()
 
-run_uv()
+serve()
 

@@ -61,4 +61,4 @@ async def get(id:int):
     return Div(Div(todo.title), btn)
 
 setup_hf_backup(app)
-run_uv()
+serve()

@@ -84,4 +84,4 @@ async def get(id:int):
     todo = todos[id]
     btn = Button('delete', hx_delete=f'/todo/{id}', target_id=f'todo-{id}', hx_swap="outerHTML")
     return Div(Div(todo.title), Div(todo.details, cls="markdown"), btn)
-run_uv()
+serve()

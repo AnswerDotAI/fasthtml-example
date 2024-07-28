@@ -26,4 +26,4 @@ def get():
 @rt('/click')
 def get(): return P('Clicked!')
 
-run_uv()
+serve()

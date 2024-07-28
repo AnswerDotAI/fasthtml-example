@@ -7,5 +7,5 @@ def get():
         'Hello',
         P('world'))
 
-run_uv()
+serve()
 

@@ -29,5 +29,5 @@ def get():
     wrapper = Wrapper("Gallery", sub, Gallery(items), style=1)
     return PageWrapper("Gallery Demo", wrapper, footer())
 
-run_uv()
+serve()
 

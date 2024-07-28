@@ -66,4 +66,4 @@ async def post(request: Request):
 
     return JSONResponse({"completion": completion})
 
-run_uv()
+serve()

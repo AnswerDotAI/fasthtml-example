@@ -128,4 +128,4 @@ async def put(move: str):
         await player.send_text(to_xml(Board()))
 
 
-run_uv()
+serve()

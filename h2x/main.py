@@ -11,5 +11,5 @@ def get():
     return Titled("Convert HTML to FT",
                   Label("HTML"), txt, Div(id="ft"))
 
-run_uv()
+serve()
 

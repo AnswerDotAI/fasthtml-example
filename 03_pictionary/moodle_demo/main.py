@@ -719,7 +719,7 @@ async def shutdown_event():
 
 if __name__ == "__main__":
     try:
-        run_uv()
+        serve()
     except KeyboardInterrupt:
         pass
     finally:
