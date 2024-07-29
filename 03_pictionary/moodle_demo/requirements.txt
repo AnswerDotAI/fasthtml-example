@@ -3,4 +3,5 @@ pillow
 openai
 anthropic
 google-generativeai
+pandas
 
