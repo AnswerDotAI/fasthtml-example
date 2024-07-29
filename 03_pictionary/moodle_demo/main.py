@@ -4,6 +4,7 @@ import threading, time, signal, sys, pathlib, random, uuid, base64
 from PIL import Image as PILImage
 from PIL import ImageDraw, ImageFont
 from dataclasses import dataclass
+import pandas as pd
 
 # Settings
 max_concurrent_games = 2
@@ -47,7 +48,7 @@ sakura = Style(open('modified_sakura.css').read(), type="text/css", rel="stylesh
 app = FastHTML(hdrs=[sakura, css, js, confetti, MarkdownJS()], before=bware)
 
 # Set up the database with the tables we need
-db = database('pictionary.db')
+db = database('data/moodle.db')
 games, guesses, drawings = db.t.games, db.t.guesses, db.t.drawings
 if games not in db.t:
     games.create(id=int, word=str, player=str, last_drawing=float, start_time=float, end_time=float,
@@ -517,6 +518,17 @@ def about():
         Div(about_md, cls='marked', style='text-align: left;'),
         A("Back to Home", href="/"),
         cls='content')
+
+# Option for us to download the data as a CSV
+@app.get("/download/{table}")
+def download_dbs(table:str):
+    with db_lock:
+        if table == "games": df = pd.DataFrame(games())
+        elif table == "guesses": df = pd.DataFrame(guesses())
+        elif table == "drawings": df = pd.DataFrame(drawings())
+        else: return "Invalid table name."
+    df.to_csv(f"data/{table}.csv", index=False)
+    return FileResponse(f"data/{table}.csv", media_type='text/csv', filename=f"{table}.csv")
 
 
 # For images, CSS, etc.
