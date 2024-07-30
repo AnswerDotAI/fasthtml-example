@@ -1,5 +1,6 @@
 from fasthtml.common import *
-import openai
+import os
+from openai import OpenAI
 
 # Set up the app, including daisyui and tailwind for the chat component
 tlink = Script(src="https://cdn.tailwindcss.com")
@@ -7,8 +8,8 @@ dlink = Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1
 app = FastHTML(hdrs=(tlink, dlink, picolink))
 
 # Initialize the OpenAI client
-# openai.api_key = "YOUR_OPENAI_API_KEY"
-model = "text-davinci-003"
+# openai.api_key = os.getenv("OPENAI_API_KEY")
+model = "gpt-4o-mini"  # model = "gpt-3.5-turbo"
 sp = "You are a helpful and concise assistant."
 messages = []
 
@@ -44,15 +45,16 @@ def get():
 def post(msg: str):
     messages.append({"role": "user", "content": msg})
 
-    response = openai.Completion.create(
-        model=model,
-        prompt=sp + "\n".join([f"{m['role']}: {m['content']}" for m in messages]),
-        max_tokens=150,
-        n=1,
-        stop=None,
-        temperature=0.7,
+    client = OpenAI(
+        # This is the default and can be omitted
+        api_key=os.environ.get("OPENAI_API_KEY"),
     )
-    content = response.choices[0].text.strip()
+
+    response = client.chat.completions.create(
+        model=model,
+        messages=[{"role": msg["role"], "content": msg["content"]} for msg in messages],
+    )
+    content = response.choices[0].message.content.strip()
     messages.append({"role": "assistant", "content": content})
 
     return (ChatMessage(messages[-2]), # The user's message
