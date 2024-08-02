@@ -128,4 +128,6 @@ async def put(move: str):
         await player.send_text(to_xml(Board()))
 
 
-serve()
+if __name__ == '__main__':
+    from fasthtml.common import serve
+    serve()
