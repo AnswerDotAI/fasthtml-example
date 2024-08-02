@@ -398,7 +398,9 @@ def nickname_form(session, game):
                 game.player_name = session['nickname']
                 games.update(game)
         else: # need a nickname from them
-            top_10 = games(where="end_time IS NOT NULL", order_by="(end_time - start_time) ASC", limit=10)
+            top_10 = games(where="end_time IS NOT NULL AND end_time > strftime('%s', 'now', '-1 day') AND approved",
+                        order_by="(end_time - start_time) ASC",
+                        limit=10)
             if game in top_10:
                 nickname_form = Div(
                     P("You're in the top 10! Set a nickname for the leaderboard:"),
