@@ -92,7 +92,7 @@ def render(Item):
     )
     return card
 
-app, rt, texts_db, Item = fast_app('texts.db',hdrs=(tlink, dlink, picolink, MarkdownJS(), HighlightJS()), live=True, id=int, messages=list, feedback=bool, notes=str, pk='id', render=render)
+app, rt, texts_db, Item = fast_app('texts.db',hdrs=(tlink, dlink, picolink, MarkdownJS(), HighlightJS()), live=True, id=int, messages=list, feedback=bool, notes=str, pk='id', render=render, bodykw={"data-theme":"light"})
 
 
 title = 'LLM generated text annotation tool with FastHTML (and Tailwind)'
