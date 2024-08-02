@@ -66,5 +66,6 @@ async def process_canvas(image: str):
 
 The obvious next step was to turn this into a game of Pictionary! Here's what the current (work in progress) app looks like:
 
-![In Action](moodle_demo.gif)
+![In Action](in_action.gif)
 
+You can view the running app at [moodle-game.com](https://moodle-game.com/). The code for this version is in the 'moodle_demo' folder.

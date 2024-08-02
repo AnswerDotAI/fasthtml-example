@@ -8,4 +8,3 @@ def get():
         P('world'))
 
 serve()
-
