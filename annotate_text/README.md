@@ -4,6 +4,8 @@ This project implements a simple text annotation application using FastHTML, sho
 
 ![Text Annotation App Screenshot](https://gist.github.com/user-attachments/assets/f28aff8c-3a55-439d-b605-d68c0b82c1b3)
 
+Contributed by: [@altryne](https://x.com/altryne)
+
 ## Features
 
 - View and navigate through text samples
