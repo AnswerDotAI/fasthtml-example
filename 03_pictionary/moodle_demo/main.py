@@ -543,14 +543,17 @@ def static(fname: str, ext: str):
 
 ## API clients ##
 import google.generativeai as genai
-from openai import AzureOpenAI
+from openai import AzureOpenAI, OpenAI
 import anthropic
 
 genai.configure(api_key=os.environ.get("G_API_KEY"))
-openai_client = AzureOpenAI(
-  azure_endpoint='https://answeroai-eus2.openai.azure.com',
-  api_key=os.environ.get("AZURE_KEY"),
-  api_version="2024-02-01",
+# openai_client = AzureOpenAI(
+#   azure_endpoint='https://answeroai-eus2.openai.azure.com',
+#   api_key=os.environ.get("AZURE_KEY"),
+#   api_version="2024-02-01",
+# )
+openai_client = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY"),
 )
 anthropic_client = anthropic.Anthropic(
   api_key=os.environ.get("ANTHROPIC_API_KEY"),
@@ -573,7 +576,7 @@ def guess_gemini(image_fn, guess_history=None):
 def guess_gpt_4o(image_fn, guess_history=None):
     base64_image = base64.b64encode(open(image_fn, 'rb').read()).decode('utf-8')
     completion = openai_client.chat.completions.create(
-    model="gpt-4o",
+    model="gpt-4o-mini", # gpt-4o if Azure since mini not on there yet
     messages=[{
         "role":
         "user",
@@ -587,7 +590,7 @@ def guess_gpt_4o(image_fn, guess_history=None):
             }
         }]
     }])
-    return "GPT-4o", completion.choices[0].message.content
+    return "4o-mini", completion.choices[0].message.content
 
 def guess_haiku(image_fn, guess_history=None):
   image_bytes = open(image_fn, "rb").read()
