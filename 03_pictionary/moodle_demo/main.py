@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import pandas as pd
 
 # Settings
-max_concurrent_games = 2
+max_concurrent_games = 3
 game_max_duration = 30
 thread_debug = False
 domain = "https://moodle-game.com"
@@ -309,10 +309,16 @@ def end_game(game):
     with db_lock:
         game.game_gif = gif_path
         games.update(game)
-    # TODO use model to see if it's a troll or legit.
+    
     if True:
         final_draw = drawings[game.last_drawing]
+        # Reject if no drawings
+        if not final_draw: return
+        # Reject if no guesses
+        if not guesses(where=f'game={game.id}'): return
+        # TODO use model to see if it's a troll or legit.
         image_fn = final_draw.fn
+
         game.approved = True
         with db_lock:
             games.update(game)
@@ -357,8 +363,8 @@ def join(session):
 
 @app.get('/leaderboard')
 def leaderboard():
-    # TODO top 5 of the day maybe?
-    fastest_games = games(where="end_time IS NOT NULL",
+    # Top 10 in last 24 hours and approved games only
+    fastest_games = games(where="end_time IS NOT NULL AND end_time > strftime('%s', 'now', '-1 day') AND approved",
                         order_by="(end_time - start_time) ASC",
                         limit=10)
     rows = []
@@ -377,7 +383,7 @@ def leaderboard():
                     cls="table table-striped table-hover")
 
     return Title("Leaderboard - Fastest Games"),  Navbar("leaderboard"),  Main(
-            H1("Top 10 Fastest Games:", style="text-align: left;"),
+            H1("Top 10 Fastest Games (past 24 hours):", style="text-align: left;"),
             table,
             A("Back to Home", href="/"),
             cls='container')
