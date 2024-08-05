@@ -16,20 +16,20 @@ messages = []
 # Now with a unique ID for the content and the message
 def ChatMessage(msg_idx, **kwargs):
     msg = messages[msg_idx]
-    bubble_class = f"chat-bubble-{'primary' if msg['role'] == 'user' else 'secondary'}"
-    chat_class = f"chat-{'end' if msg['role'] == 'user' else 'start'}"
+    bubble_class = "chat-bubble-primary" if msg['role']=='user' else 'chat-bubble-secondary'
+    chat_class = "chat-end" if msg['role']=='user' else 'chat-start'
     return Div(Div(msg['role'], cls="chat-header"),
-               Div(msg['content'], 
+               Div(msg['content'],
                    id=f"chat-content-{msg_idx}", # Target if updating the content
                    cls=f"chat-bubble {bubble_class}"),
                id=f"chat-message-{msg_idx}", # Target if replacing the whole message
                cls=f"chat {chat_class}", **kwargs)
 
-# The input field for the user message. Also used to clear the 
+# The input field for the user message. Also used to clear the
 # input field after sending a message via an OOB swap
 def ChatInput():
-    return Input(type="text", name='msg', id='msg-input', 
-                 placeholder="Type a message", 
+    return Input(type="text", name='msg', id='msg-input',
+                 placeholder="Type a message",
                  cls="input input-bordered w-full", hx_swap_oob='true')
 
 # The main screen
@@ -41,14 +41,14 @@ def get():
                 Form(Group(ChatInput(), Button("Send", cls="btn btn-primary")),
                     ws_send="", hx_ext="ws", ws_connect="/wscon",
                     cls="flex space-x-2 mt-2",
-                ), 
+                ),
                 cls="p-4 max-w-lg mx-auto",
                 ) # Open a websocket connection on page load
     return Title('Chatbot Demo'), page
 
 
 @app.ws('/wscon')
-async def ws(msg:str, send): 
+async def ws(msg:str, send):
     messages.append({"role":"user", "content":msg})
 
     # Send the user message to the user (updates the UI right away)
@@ -61,10 +61,10 @@ async def ws(msg:str, send):
     r = cli(messages, sp=sp, stream=True)
 
     # Send an empty message with the assistant response
-    messages.append({"role":"assistant", "content":""}) 
-    await send(Div(ChatMessage(len(messages)-1), hx_swap_oob='beforeend', id="chatlist")) 
+    messages.append({"role":"assistant", "content":""})
+    await send(Div(ChatMessage(len(messages)-1), hx_swap_oob='beforeend', id="chatlist"))
 
-    # Fill in the message content  
+    # Fill in the message content
     for chunk in r:
         messages[-1]["content"] += chunk
         await send(Span(chunk, id=f"chat-content-{len(messages)-1}", hx_swap_oob="beforeend"))
