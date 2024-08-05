@@ -2,7 +2,7 @@ from fasthtml.common import *
 from random import randint
 import secrets
 
-app,rt = fast_app(live=True)
+app,rt = fast_app()
 
 def mk_row():
     idx = randint(0,1000)
