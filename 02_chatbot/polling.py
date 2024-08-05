@@ -15,13 +15,13 @@ messages = []
 def ChatMessage(msg_idx):
     msg = messages[msg_idx]
     text = "..." if msg['content'] == "" else msg['content']
-    bubble_class = f"chat-bubble-{'primary' if msg['role'] == 'user' else 'secondary'}"
-    chat_class = f"chat-{'end' if msg['role'] == 'user' else 'start'}"
+    bubble_class = "chat-bubble-primary" if msg['role']=='user' else 'chat-bubble-secondary'
+    chat_class = "chat-end" if msg['role']=='user' else 'chat-start'
     generating = 'generating' in messages[msg_idx] and messages[msg_idx]['generating']
     stream_args = {"hx_trigger":"every 0.1s", "hx_swap":"outerHTML", "hx_get":f"/chat_message/{msg_idx}"}
     return Div(Div(msg['role'], cls="chat-header"),
                Div(text, cls=f"chat-bubble {bubble_class}"),
-               cls=f"chat {chat_class}", id=f"chat-message-{msg_idx}", 
+               cls=f"chat {chat_class}", id=f"chat-message-{msg_idx}",
                **stream_args if generating else {})
 
 # Route that gets polled while streaming
@@ -30,11 +30,11 @@ def get_chat_message(msg_idx:int):
     if msg_idx >= len(messages): return ""
     return ChatMessage(msg_idx)
 
-# The input field for the user message. Also used to clear the 
+# The input field for the user message. Also used to clear the
 # input field after sending a message via an OOB swap
 def ChatInput():
-    return Input(type="text", name='msg', id='msg-input', 
-                 placeholder="Type a message", 
+    return Input(type="text", name='msg', id='msg-input',
+                 placeholder="Type a message",
                  cls="input input-bordered w-full", hx_swap_oob='true')
 
 # The main screen

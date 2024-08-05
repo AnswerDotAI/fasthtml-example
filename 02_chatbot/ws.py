@@ -14,8 +14,8 @@ messages = []
 
 # Chat message component (renders a chat bubble)
 def ChatMessage(msg):
-    bubble_class = f"chat-bubble-{'primary' if msg['role'] == 'user' else 'secondary'}"
-    chat_class = f"chat-{'end' if msg['role'] == 'user' else 'start'}"
+    bubble_class = "chat-bubble-primary" if msg['role']=='user' else 'chat-bubble-secondary'
+    chat_class = "chat-end" if msg['role']=='user' else 'chat-start'
     return Div(Div(msg['role'], cls="chat-header"),
                Div(msg['content'], cls=f"chat-bubble {bubble_class}"),
                cls=f"chat {chat_class}")
