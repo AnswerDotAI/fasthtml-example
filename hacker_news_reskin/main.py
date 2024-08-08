@@ -21,7 +21,7 @@ app = FastHTML(hdrs=(style))
 rt = app.route
 
 # Database setup
-db = database('distilhn.db')
+db = database('data/summaries.db')
 summaries = db.t.summaries
 if summaries not in db.t:
     summaries.create(url=str, title=str, summary=str, image_url=str, hn_comments=str, created_at=float, pk='url')
@@ -39,7 +39,6 @@ def Article(s):
 
 @rt("/")
 async def get():
-    """Main page with summaries"""
     latest_summaries = summaries(order_by='-created_at', limit=20)
     return Title("CoolHN"), Body(
         H1("AI Summarized Hacker News"),

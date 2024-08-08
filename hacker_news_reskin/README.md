@@ -12,4 +12,6 @@ Key features:
 
 The styling is currently quite minimal - we encourage you to make your own crazy-looking versions!
 
+Requires setting OPENAI_API_KEY in your environment variables.
+
 A version of this is used for [distilhn.com](https://distilhn.com).
