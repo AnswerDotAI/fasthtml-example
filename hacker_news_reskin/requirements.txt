@@ -1,0 +1,4 @@
+openai
+python-fasthtml
+aiohttp
+beautifulsoup4
