@@ -1,9 +1,13 @@
 from fasthtml.common import *
 from hmac import compare_digest
+# required for sqlalchemy:
+# from fastsql import *
 
 db = database('data/utodos.db')
+# for sqlalchemy:
+# db = Database(url)
 class User: name:str; pwd:str
-class Todo: id:int; title:str; done:bool=False; name:str; details:str; priority:int
+class Todo: id:int; title:str; done:bool; name:str; details:str; priority:int
 users = db.create(User, pk='name')
 todos = db.create(Todo)
 
@@ -69,7 +73,7 @@ def get(auth):
 
 @rt("/reorder")
 def post(id:list[int]):
-    for i,id_ in enumerate(id): todos.update({'priority':i}, id_)
+    for i,id_ in enumerate(id): todos.update(Todo(priority=i, id=id_))
     return tuple(todos(order_by='priority'))
 
 @rt("/todos/{id}")
@@ -86,7 +90,7 @@ async def get(id:int):
     return fill_form(res, todos[id])
 
 @rt("/")
-async def put(todo: Todo): return todos.upsert(todo), clear('current-todo')
+async def put(todo: Todo): return todos.update(todo), clear('current-todo')
 
 @rt("/")
 async def post(todo:Todo):
