@@ -49,7 +49,7 @@ def get():
 
 @app.ws('/wscon')
 async def ws(msg:str, send):
-    messages.append({"role":"user", "content":msg})
+    messages.append({"role":"user", "content":msg.rstrip()})
 
     # Send the user message to the user (updates the UI right away)
     await send(Div(ChatMessage(len(messages)-1), hx_swap_oob='beforeend', id="chatlist"))

@@ -41,7 +41,7 @@ def get():
 # Handle the form submission
 @app.post("/")
 def post(msg:str):
-    messages.append({"role":"user", "content":msg})
+    messages.append({"role":"user", "content":msg.rstrip()})
     r = cli(messages, sp=sp) # get response from chat model
     messages.append({"role":"assistant", "content":contents(r)})
     return (ChatMessage(messages[-2]), # The user's message

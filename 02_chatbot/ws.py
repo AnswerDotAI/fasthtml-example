@@ -46,7 +46,7 @@ def get():
 async def ws(msg:str, send):
 
     # Send the user message to the user (updates the UI right away)
-    messages.append({"role":"user", "content":msg})
+    messages.append({"role":"user", "content":msg.rstrip()})
     await send(Div(ChatMessage(messages[-1]), hx_swap_oob='beforeend', id="chatlist"))
 
     # Send the clear input field command to the user

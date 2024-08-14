@@ -59,7 +59,7 @@ def get_response(r, idx):
 @app.post("/")
 def post(msg:str):
     idx = len(messages)
-    messages.append({"role":"user", "content":msg})
+    messages.append({"role":"user", "content":msg.rstrip()})
     r = cli(messages, sp=sp, stream=True) # Send message to chat model (with streaming)
     messages.append({"role":"assistant", "generating":True, "content":""}) # Response initially blank
     get_response(r, idx+1) # Start a new thread to fill in content
