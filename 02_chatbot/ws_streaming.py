@@ -39,7 +39,7 @@ def get():
                 Div(*[ChatMessage(msg) for msg in messages],
                     id="chatlist", cls="chat-box h-[73vh] overflow-y-auto"),
                 Form(Group(ChatInput(), Button("Send", cls="btn btn-primary")),
-                    ws_send="", hx_ext="ws", ws_connect="/wscon",
+                    ws_send=True, hx_ext="ws", ws_connect="/wscon",
                     cls="flex space-x-2 mt-2",
                 ),
                 cls="p-4 max-w-lg mx-auto",
