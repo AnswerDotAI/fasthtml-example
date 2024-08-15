@@ -9,7 +9,7 @@ from sse_starlette.sse import EventSourceResponse
 async def numbers(minimum, maximum):
     for i in range(minimum, maximum + 1):
         await asyncio.sleep(0.9)
-        yield dict(data=i)
+        yield dict(data=f'{i}\n\n{i}', id=f'data-{i}', event='update_number')
 
 
 async def sse(request):
