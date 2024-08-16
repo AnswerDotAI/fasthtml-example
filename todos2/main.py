@@ -1,10 +1,11 @@
 from fasthtml.common import *
 from hmac import compare_digest
 # required for sqlalchemy:
-# from fastsql import *
+from fastsql import *
 
 db = database('data/utodos.db')
 # for sqlalchemy:
+# url = 'postgresql://'
 # db = Database(url)
 class User: name:str; pwd:str
 class Todo: id:int; title:str; done:bool; name:str; details:str; priority:int
@@ -25,8 +26,8 @@ app,rt = fast_app(before=bware,
                   exception_handlers={404: _not_found},
                   hdrs=(SortableJS('.sortable'), MarkdownJS('.markdown')))
 
-@rt("/login")
-def get():
+@app.get
+def login():
     frm = Form(
         Input(id='name', placeholder='Name'),
         Input(id='pwd', type='password', placeholder='Password'),
@@ -53,55 +54,59 @@ def logout(sess):
 
 @patch
 def __ft__(self:Todo):
-    show = AX(self.title, f'/todos/{self.id}', 'current-todo')
-    edit = AX('edit',     f'/edit/{self.id}' , 'current-todo')
+    ashow = A(self.title, hx_post=retrieve(id=self.id), target_id='current-todo')
+    aedit = A('edit',     hx_post=edit(id=self.id), target_id='current-todo')
     dt = '✅ ' if self.done else ''
-    cts = (dt, show, ' | ', edit, Hidden(id="id", value=self.id), Hidden(id="priority", value="0"))
+    cts = (dt, ashow, ' | ', aedit, Hidden(id="id", value=self.id), Hidden(id="priority", value="0"))
     return Li(*cts, id=f'todo-{self.id}')
 
 @rt("/")
 def get(auth):
     title = f"{auth}'s Todo list"
-    top = Grid(H1(title), Div(A('logout', href='/logout'), style='text-align: right'))
+    top = Grid(H1(title),
+               Div(A('logout', href='/logout'),
+                   style='text-align: right'))
     new_inp = Input(id="new-title", name="title", placeholder="New Todo")
-    add = Form(Group(new_inp, Button("Add")),
-               hx_post="/", target_id='todo-list', hx_swap="afterbegin")
-    frm = Form(*todos(order_by='priority'),
-               id='todo-list', cls='sortable', hx_post="/reorder", hx_trigger="end")
+    add = Form(hx_post=create, target_id='todo-list', hx_swap="afterbegin")(
+               Group(new_inp, Button("Add")))
+    frm = Form(id='todo-list', cls='sortable', hx_post=reorder, hx_trigger="end")(
+               *todos(order_by='priority'))
     card = Card(Ul(frm), header=add, footer=Div(id='current-todo'))
     return Title(title), Container(top, card)
 
-@rt("/reorder")
-def post(id:list[int]):
-    for i,id_ in enumerate(id): todos.update(Todo(priority=i, id=id_))
+@rt
+def reorder(id:list[int]):
+    for i,id_ in enumerate(id): todos.update(priority=i, id=id_)
     return tuple(todos(order_by='priority'))
 
-@rt("/todos/{id}")
-def delete(id:int):
+@rt
+def create(todo:Todo):
+    new_inp = Input(id="new-title", name="title", placeholder="New Todo", hx_swap_oob='true')
+    return todos.insert(todo), new_inp
+
+@rt
+def remove(id:int):
     todos.delete(id)
     return clear('current-todo')
 
-@rt("/edit/{id}")
-async def get(id:int):
-    res = Form(Group(Input(id="title"), Button("Save")),
-        Hidden(id="id"), Checkbox(id="done", label='Done'),
-        Textarea(id="details", name="details", rows=10),
-        hx_put="/", target_id=f'todo-{id}', id="edit")
+@rt
+def edit(id:int):
+    res = Form(hx_post=replace, target_id=f'todo-{id}', id="edit")(
+            Group(Input(id="title"), Button("Save")),
+            Hidden(id="id"), Hidden(priority="priority"),
+            Hidden(name="done"), CheckboxX(id="done", label='Done'),
+            Textarea(id="details", name="details", rows=10))
     return fill_form(res, todos[id])
 
-@rt("/")
-async def put(todo: Todo): return todos.update(todo), clear('current-todo')
+@rt
+def replace(todo: Todo): return todos.update(todo), clear('current-todo')
 
-@rt("/")
-async def post(todo:Todo):
-    new_inp =  Input(id="new-title", name="title", placeholder="New Todo", hx_swap_oob='true')
-    return todos.insert(todo), new_inp
-
-@rt("/todos/{id}")
-async def get(id:int):
+@rt
+def retrieve(id:int):
     todo = todos[id]
-    btn = Button('delete', hx_delete=f'/todos/{todo.id}',
-                 target_id=f'todo-{todo.id}', hx_swap="outerHTML")
+    btn = Button('delete',
+                 name='id', value=id, target_id=f'todo-{todo.id}',
+                 hx_post=remove, hx_swap="outerHTML")
     return Div(H2(todo.title), Div(todo.details, cls="markdown"), btn)
 
 serve()
