@@ -94,7 +94,7 @@ def edit(id:int):
     res = Form(hx_post=replace, target_id=f'todo-{id}', id="edit")(
             Group(Input(id="title"), Button("Save")),
             Hidden(id="id"), Hidden(priority="priority"),
-            Hidden(name="done"), CheckboxX(id="done", label='Done'),
+            Hidden(name="done"), Checkbox(id="done", label='Done'),
             Textarea(id="details", name="details", rows=10))
     return fill_form(res, todos[id])
 
