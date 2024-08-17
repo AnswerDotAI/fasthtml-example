@@ -15,7 +15,7 @@ def __ft__(self:Todo):
     dt = ' ✅' if self.done else ''
     return Li(show, dt, ' | ', edit, id=tid(self.id))
 
-def mk_input(**kw): return Input(id="new-title", name="title", placeholder="New Todo", **kw)
+def mk_input(**kw): return Input(id="new-title", name="title", placeholder="New Todo", required=True, **kw)
 
 @rt("/")
 async def get():
