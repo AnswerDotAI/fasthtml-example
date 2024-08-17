@@ -1,5 +1,4 @@
 from fasthtml.common import *
-from fasthtml.common import fast_app
 
 app,rt,todos,Todo = fast_app(
     'data/todos.db',
