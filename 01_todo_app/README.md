@@ -82,7 +82,7 @@ Editing a todo item is handled by this route which takes the todo's id as a para
 @rt("/edit/{id}")
 async def get(id:int):
     res = Form(Group(Input(id="title"), Button("Save")),
-        Hidden(id="id"), CheckboxX(id="done", label='Done'),
+        Hidden(id="id"), Checkbox(id="done", label='Done'),
         hx_put="/", target_id=tid(id), id="edit")
     return fill_form(res, todos.get(id))
 ```
