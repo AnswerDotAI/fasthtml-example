@@ -28,11 +28,10 @@ app,rt = fast_app(before=bware,
 
 @app.get
 def login():
-    frm = Form(
+    frm = Form(action='/login', method='post')(
         Input(id='name', placeholder='Name'),
         Input(id='pwd', type='password', placeholder='Password'),
-        Button('login'),
-        action='/login', method='post')
+        Button('login'))
     return Titled("Login", frm)
 
 @dataclass
