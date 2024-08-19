@@ -1,3 +1,4 @@
+"""Another pure FastHTML method, only dependency is python-fasthtml."""
 import asyncio
 import random
 from fasthtml.common import *

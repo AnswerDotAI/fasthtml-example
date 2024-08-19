@@ -1,4 +1,4 @@
-
+"""Pure FastHTML method, only dependency is python-fasthtml."""
 import asyncio
 from datetime import datetime
 from fasthtml.common import *

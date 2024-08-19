@@ -1,4 +1,4 @@
-
+"""This uses sse-starlette to better structure the SSE response."""
 import asyncio
 from datetime import datetime
 from fasthtml.common import *
