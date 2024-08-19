@@ -1,6 +1,11 @@
-from fasthtml.common import *
-from fasthtml.oauth import GitHubAppClient
 import json
+import os
+
+from fasthtml.oauth import GitHubAppClient
+from dotenv import load_dotenv
+from fasthtml.common import *
+
+load_dotenv() 
 
 # Auth client
 client = GitHubAppClient(os.getenv("AUTH_CLIENT_ID"), 

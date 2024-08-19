@@ -103,6 +103,8 @@ celerybeat-schedule
 
 # dotenv
 .env
+**/.env
+oauth_example/.env
 
 # virtualenv
 .venv
