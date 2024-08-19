@@ -14,10 +14,11 @@ sp = "You are a helpful and concise assistant."
 def ChatMessage(msg, user):
     bubble_class = "chat-bubble-primary" if user else 'chat-bubble-secondary'
     chat_class = "chat-end" if user else 'chat-start'
-    return Div(Div('user' if user else 'assistant', cls="chat-header"),
+    return Div(cls=f"chat {chat_class}")(
+               Div('user' if user else 'assistant', cls="chat-header"),
                Div(msg, cls=f"chat-bubble {bubble_class}"),
-               Hidden(msg, name="messages"),
-               cls=f"chat {chat_class}")
+               Hidden(msg, name="messages")
+           )
 
 # The input field for the user message. Also used to clear the
 # input field after sending a message via an OOB swap

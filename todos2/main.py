@@ -53,8 +53,8 @@ def logout(sess):
 
 @patch
 def __ft__(self:Todo):
-    ashow = A(self.title, hx_post=retrieve(id=self.id), target_id='current-todo')
-    aedit = A('edit',     hx_post=edit(id=self.id), target_id='current-todo')
+    ashow = A(self.title, hx_post=retr.rt(id=self.id), target_id='current-todo')
+    aedit = A('edit',     hx_post=edit.rt(id=self.id), target_id='current-todo')
     dt = '✅ ' if self.done else ''
     cts = (dt, ashow, ' | ', aedit, Hidden(id="id", value=self.id), Hidden(id="priority", value="0"))
     return Li(*cts, id=f'todo-{self.id}')
@@ -101,7 +101,7 @@ def edit(id:int):
 def replace(todo: Todo): return todos.update(todo), clear('current-todo')
 
 @rt
-def retrieve(id:int):
+def retr(id:int):
     todo = todos[id]
     btn = Button('delete',
                  name='id', value=id, target_id=f'todo-{todo.id}',
