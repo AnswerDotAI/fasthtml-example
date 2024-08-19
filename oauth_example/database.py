@@ -1,5 +1,11 @@
+import os
+import json
+
 from fasthtml.common import *
+from dotenv import load_dotenv
 from fasthtml.oauth import GitHubAppClient
+
+load_dotenv() 
 
 # # Set up a database
 db = database('data/user_counts.db')
