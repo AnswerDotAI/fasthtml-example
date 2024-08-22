@@ -70,4 +70,5 @@ async def ws(msg:str, send):
         await send(Span(chunk, id=f"chat-content-{len(messages)-1}", hx_swap_oob="beforeend"))
         await asyncio.sleep(0.5) # Simulate a delay
 
-if __name__ == '__main__': uvicorn.run("ws_streaming:app", host='0.0.0.0', port=8000, reload=True)
+serve()
+
