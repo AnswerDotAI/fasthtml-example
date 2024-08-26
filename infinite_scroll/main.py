@@ -1,8 +1,8 @@
-from fasthtml import FastHTML, picolink
+from fasthtml import FastHTML
 from fasthtml.common import *
 import random, uvicorn
 
-app = FastHTML(hdrs=(picolink,))
+app = FastHTML()
 
 def create_card(number):
     color = f"hsl({random.randint(0, 360)}, 70%, 80%)"
