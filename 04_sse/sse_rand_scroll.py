@@ -1,12 +1,8 @@
-"""Another pure FastHTML method, only dependency is python-fasthtml."""
-import asyncio
-import random
+import asyncio, random
 from fasthtml.common import *
 from starlette.responses import StreamingResponse
 
-sselink = Script(src="https://unpkg.com/htmx-ext-sse@2.2.1/sse.js")
-app, rt = fast_app(hdrs=(sselink,))
-
+app, rt = fast_app(hdrs=(Script(src="https://unpkg.com/htmx-ext-sse@2.2.1/sse.js"),))
 
 @rt
 def index():
@@ -17,8 +13,7 @@ def index():
             sse_swap="NumbersGeneratedEvent")
     )
 
-def Random():
-    return Article(random.randint(1, 100))
+def Random(): return Article(random.randint(1, 100))
 
 async def number_generator():
     "Generate a random number every second"
