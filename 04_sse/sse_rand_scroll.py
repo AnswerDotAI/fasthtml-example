@@ -1,7 +1,6 @@
 import random
 from asyncio import sleep
 from fasthtml.common import *
-from starlette.responses import StreamingResponse
 
 hdrs=(Script(src="https://unpkg.com/htmx-ext-sse@2.2.1/sse.js"),)
 app,rt = fast_app(hdrs=hdrs)
