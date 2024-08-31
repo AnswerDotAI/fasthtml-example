@@ -13,8 +13,6 @@ def index():
         Div(hx_ext="sse", sse_connect="/number-stream",
             hx_swap="beforeend show:bottom", sse_swap="message"))
 
-def Random(): return Article(random.randint(1, 100))
-
 shutdown_event = signal_shutdown()
 async def number_generator():
     while not shutdown_event.is_set():
