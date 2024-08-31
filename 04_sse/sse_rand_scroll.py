@@ -5,19 +5,20 @@ from fasthtml.common import *
 from starlette.responses import StreamingResponse
 
 sselink = Script(src="https://unpkg.com/htmx-ext-sse@2.2.1/sse.js")
-htmx_log = Script("htmx.logAll();"),
-app, rt = fast_app(hdrs=(sselink,htmx_log))
+app, rt = fast_app(hdrs=(sselink,))
 
 
-@rt("/")
-def get():
+@rt
+def index():
     return Titled("SSE Random Number Generator",
-            Div(hx_trigger="from:#rando changed", hx_swap="afterend")(
-                Div("Random numbers coming...", sse_swap="NumbersGeneratedEvent", id="rando", hx_ext="sse", sse_connect="/number-stream"))
-            )
+        P("Generate a random number, as the list grows scroll downwards."),
+        Div(hx_ext="sse", sse_connect="/number-stream",
+            hx_swap="beforeend show:bottom",
+            sse_swap="NumbersGeneratedEvent")
+    )
 
 def Random():
-    return Div(random.randint(1, 100), id="rando",  sse_swap="NumbersGeneratedEvent")
+    return Article(random.randint(1, 100))
 
 async def number_generator():
     "Generate a random number every second"
