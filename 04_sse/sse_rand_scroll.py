@@ -1,29 +1,30 @@
-import asyncio, random
+import random
+from asyncio import sleep
 from fasthtml.common import *
 from starlette.responses import StreamingResponse
 
-app, rt = fast_app(hdrs=(Script(src="https://unpkg.com/htmx-ext-sse@2.2.1/sse.js"),))
+hdrs=(Script(src="https://unpkg.com/htmx-ext-sse@2.2.1/sse.js"),)
+app,rt = fast_app(hdrs=hdrs)
 
 @rt
 def index():
     return Titled("SSE Random Number Generator",
-        P("Generate a random number, as the list grows scroll downwards."),
+        P("Generate pairs of random numbers, as the list grows scroll downwards."),
         Div(hx_ext="sse", sse_connect="/number-stream",
-            hx_swap="beforeend show:bottom",
-            sse_swap="NumbersGeneratedEvent")
-    )
+            hx_swap="beforeend show:bottom", sse_swap="message"))
 
 def Random(): return Article(random.randint(1, 100))
 
+shutdown_event = signal_shutdown()
 async def number_generator():
-    "Generate a random number every second"
-    while True:
-        yield f"""event: NumbersGeneratedEvent\ndata: {to_xml(Random())}\n\n"""
-        await asyncio.sleep(1)
+    while not shutdown_event.is_set():
+        data = Div(
+                Article(random.randint(1, 100)),
+                Article(random.randint(1, 100)))
+        yield sse_message(data)
+        await sleep(1)
 
 @rt("/number-stream")
-async def get():
-    "Send random numbers to all connected clients every second"
-    return StreamingResponse(number_generator(), media_type="text/event-stream")
-
+async def get(): return EventStream(number_generator())
 serve()
+
