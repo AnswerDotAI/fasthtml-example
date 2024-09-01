@@ -6,12 +6,14 @@ import asyncio
 # Set up the app, including daisyui and tailwind for the chat component
 hdrs = (picolink,
         Script(src="https://cdn.tailwindcss.com"),
-        Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css"))
+        Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css"),
+        Script(src="https://unpkg.com/htmx-ext-transfer-encoding-chunked@0.4.0/transfer-encoding-chunked.js"),
+        )
 
 app = FastHTML(hdrs=hdrs, ct_hdr=True, cls="p-4 max-w-lg mx-auto", live=True, debug=True)
 
 @app.route("/{fname:path}.{ext:static}")
-async def get(fname:str, ext:str): 
+async def get(fname:str, ext:str):
     return FileResponse(f'{fname}.{ext}')
 
 # Set up a chat model (https://claudette.answer.ai/)
