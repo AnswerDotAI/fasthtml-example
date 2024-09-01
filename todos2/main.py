@@ -1,7 +1,7 @@
 from fasthtml.common import *
 from hmac import compare_digest
 # required for sqlalchemy:
-from fastsql import *
+# from fastsql import *
 
 db = database('data/utodos.db')
 # for sqlalchemy:

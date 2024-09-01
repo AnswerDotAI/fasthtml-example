@@ -8,7 +8,7 @@ dlink = Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1
 app = FastHTML(hdrs=(tlink, dlink, picolink), ws_hdr=True)
 
 # Set up a chat model client and list of messages (https://claudette.answer.ai/)
-cli = Client(models[-1])
+cli = AsyncClient(models[-1])
 sp = """You are a helpful and concise assistant."""
 messages = []
 
@@ -36,38 +36,37 @@ def ChatInput():
 @app.route("/")
 def get():
     page = Body(H1('Chatbot Demo'),
-                Div(*[ChatMessage(msg) for msg in messages],
+                Div(*[ChatMessage(msg_idx) for msg_idx, msg in enumerate(messages)],
                     id="chatlist", cls="chat-box h-[73vh] overflow-y-auto"),
                 Form(Group(ChatInput(), Button("Send", cls="btn btn-primary")),
                     ws_send=True, hx_ext="ws", ws_connect="/wscon",
-                    cls="flex space-x-2 mt-2",
-                ),
-                cls="p-4 max-w-lg mx-auto",
-                ) # Open a websocket connection on page load
+                    cls="flex space-x-2 mt-2"),
+                cls="p-4 max-w-lg mx-auto")
     return Title('Chatbot Demo'), page
 
 
 @app.ws('/wscon')
 async def ws(msg:str, send):
     messages.append({"role":"user", "content":msg.rstrip()})
+    swap = 'beforeend'
 
     # Send the user message to the user (updates the UI right away)
-    await send(Div(ChatMessage(len(messages)-1), hx_swap_oob='beforeend', id="chatlist"))
+    await send(Div(ChatMessage(len(messages)-1), hx_swap_oob=swap, id="chatlist"))
 
     # Send the clear input field command to the user
     await send(ChatInput())
 
     # Model response (streaming)
-    r = cli(messages, sp=sp, stream=True)
+    r = await cli(messages, sp=sp, stream=True)
 
     # Send an empty message with the assistant response
     messages.append({"role":"assistant", "content":""})
-    await send(Div(ChatMessage(len(messages)-1), hx_swap_oob='beforeend', id="chatlist"))
+    await send(Div(ChatMessage(len(messages)-1), hx_swap_oob=swap, id="chatlist"))
 
     # Fill in the message content
-    for chunk in r:
+    async for chunk in r:
         messages[-1]["content"] += chunk
-        await send(Span(chunk, id=f"chat-content-{len(messages)-1}", hx_swap_oob="beforeend"))
-        await asyncio.sleep(0.5) # Simulate a delay
+        await send(Span(chunk, id=f"chat-content-{len(messages)-1}", hx_swap_oob=swap))
 
-if __name__ == '__main__': uvicorn.run("ws_streaming:app", host='0.0.0.0', port=8000, reload=True)
+serve()
+

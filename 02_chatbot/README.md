@@ -127,6 +127,50 @@ for chunk in r:
 
 A final note: in cases like this where the server sends multiple messages to the client, [Server Sent Events](https://v1.htmx.org/docs/#websockets-and-sse) might be an even better choice than websockets.
 
+## Chunked Transfer
+
+Using `Transfer-Encoding: chunked` is a way to send a response in chunks, which can be useful when the response is large and you want to start sending data to the client before the entire response is ready. This version is not much different from the [`basic.py example`], but instead of receiving the entire response from the chat model, we send it in chunks.
+
+We can use the [transfer-encoding-chunked](https://www.npmjs.com/package/htmx-ext-transfer-encoding-chunked) htmx extension to enable chunked transfer of the response. To do this, add the requisite headers by passing `ct_hdr=True` to the FastHTML constructor, and then use the `hx_ext="chunked-transfer"` attribute in the form.
+
+```python
+Form(hx_post=send, hx_target="#chatlist", hx_swap="beforeend", hx_ext="chunked-transfer", hx_disabled_elt="#msg-group")
+```
+
+Then in the send handler, we can stream messages to the client:
+
+```python
+async def stream_response(msg, messages):
+    yield to_xml(ChatMessage(msg, True, id=len(messages)-1))
+    yield to_xml(ChatMessage('', False, id=len(messages)))
+    r = (cli(messages, sp=sp, stream=True))
+    response_txt = ''
+    for chunk in r:
+        response_txt += chunk
+        yield to_xml(Div(
+            response_txt,
+            cls=f"chat-bubble chat-bubble-secondary",
+            id=f"msg-{len(messages)}-content",
+            hx_swap_oob="outerHTML",
+        ))
+        await asyncio.sleep(0.2)
+
+    yield to_xml(Hidden(
+        response_txt,
+        name="messages",
+        id=f"msg-{len(messages)}-hidden",
+        hx_swap_oob="outerHTML",
+    ))
+
+    yield to_xml(ChatInput())
+
+@app.post
+async def send(msg:str, messages:list[str]=None):
+    if not messages: messages = []
+    messages.append(msg.rstrip())
+    return StreamingResponse(stream_response(msg, messages), media_type="text/plain", headers={"X-Transfer-Encoding": "chunked"})
+```
+
 ## Extending this further
 
 This example is missing a number of features we'd expect in a chatbot! Hopefully it illustrates some key ideas. To extend this further, you might want to:

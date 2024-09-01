@@ -1,2 +1,2 @@
-python-fasthtml>=0.2.3
+python-fasthtml>=0.4.5
 
