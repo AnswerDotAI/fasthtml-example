@@ -1,5 +1,9 @@
 from fasthtml.common import *
 from claudette import *
+from dotenv import load_dotenv
+
+# Load environment variables from the .env file (if present)
+load_dotenv()
 
 # Set up the app, including daisyui and tailwind for the chat component
 tlink = Script(src="https://cdn.tailwindcss.com"),
@@ -41,7 +45,7 @@ def ChatInput():
 @app.route("/")
 def get():
     page = Body(H1('Chatbot Demo'),
-                Div(*[ChatMessage(msg) for msg in messages],
+                Div(*[ChatMessage(i) for i in range(len(messages))],
                     id="chatlist", cls="chat-box h-[73vh] overflow-y-auto"),
                 Form(Group(ChatInput(), Button("Send", cls="btn btn-primary")),
                     hx_post="/", hx_target="#chatlist", hx_swap="beforeend",
