@@ -41,6 +41,7 @@ def index():
 @app.post
 def send(msg:str, messages:list[str]=None):
     if not messages: messages = []
+    messages = [str(obj) for obj in messages]        
     messages.append(msg.rstrip())
     r = contents(cli(messages, sp=sp)) # get response from chat model
     return (ChatMessage(msg, True),    # The user's message
