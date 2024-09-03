@@ -2,11 +2,15 @@ from fasthtml.common import *
 from claudette import *
 from starlette.responses import StreamingResponse
 import asyncio
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Set up the app, including daisyui and tailwind for the chat component
 hdrs = (picolink,
         Script(src="https://cdn.tailwindcss.com"),
-        Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css"))
+        Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css"),
+        Script(src="https://unpkg.com/htmx-ext-transfer-encoding-chunked@0.4.0/transfer-encoding-chunked.js"))
 
 app = FastHTML(hdrs=hdrs, ct_hdr=True, cls="p-4 max-w-lg mx-auto", live=True, debug=True)
 
@@ -42,9 +46,9 @@ def ChatInput():
                  cls="input input-bordered w-full", hx_swap_oob='true')
 
 # The main screen
-@app.get
+@app.get("/")
 def index():
-    page = Form(hx_post=send, hx_target="#chatlist", hx_swap="beforeend", hx_ext="chunked-transfer", hx_disabled_elt="#msg-group")(
+    page = Form(hx_post="/", hx_target="#chatlist", hx_swap="beforeend", hx_ext="chunked-transfer", hx_disabled_elt="#msg-group")(
             Div(id="chatlist", cls="chat-box h-[73vh] overflow-y-auto"),
             Div(cls="flex space-x-2 mt-2")(
                 Group(ChatInput(), Button("Send", cls="btn btn-primary"), id="msg-group")
@@ -55,6 +59,7 @@ def index():
 async def stream_response(msg, messages):
     yield to_xml(ChatMessage(msg, True, id=len(messages)-1))
     yield to_xml(ChatMessage('', False, id=len(messages)))
+    messages = [str(obj) for obj in messages]
     r = (cli(messages, sp=sp, stream=True))
     response_txt = ''
     for chunk in r:
@@ -76,7 +81,7 @@ async def stream_response(msg, messages):
 
     yield to_xml(ChatInput())
 
-@app.post
+@app.post("/")
 async def send(msg:str, messages:list[str]=None):
     if not messages: messages = []
     messages.append(msg.rstrip())
