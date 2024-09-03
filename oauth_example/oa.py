@@ -5,9 +5,8 @@ cli = GoogleAppClient.from_file('/Users/jhoward/git/nbs/oauth-test/client_secret
 
 class Auth(OAuth):
     def login(self, info, state): return RedirectResponse('/', status_code=303)
-    def chk_auth(self, info, ident):
-        email = info.email or ''
-        return info.email_verified and email.split('@')[-1]=='answer.ai'
+    def chk_auth(self, info, ident, session):
+        return info.email_verified
 
 app = FastHTML()
 oauth = Auth(app, cli)
