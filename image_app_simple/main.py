@@ -10,8 +10,8 @@ client = replicate.Client(api_token=replicate_api_token)
 
 # gens database for storing generated image details
 tables = database('data/gens.db').t
-gens = tables.gens
-if not gens in tables:
+gens = tables.t.gens
+if not gens in tables.t:
     gens.create(prompt=str, id=int, folder=str, pk='id')
 Generation = gens.dataclass()
 
