@@ -111,7 +111,7 @@ async def send_message(msg: str):
             hx_swap="beforeend",
         )
     )
-    return user_msg, assistant_msg
+    return user_msg, assistant_msg, ChatInput()
 
 
 serve()
