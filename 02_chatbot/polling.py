@@ -41,7 +41,7 @@ def ChatInput():
 @app.route("/")
 def get():
     page = Body(H1('Chatbot Demo'),
-                Div(*[ChatMessage(msg) for msg in messages],
+                Div(*[ChatMessage(i) for i in range(len(messages))],
                     id="chatlist", cls="chat-box h-[73vh] overflow-y-auto"),
                 Form(Group(ChatInput(), Button("Send", cls="btn btn-primary")),
                     hx_post="/", hx_target="#chatlist", hx_swap="beforeend",
