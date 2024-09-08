@@ -63,7 +63,7 @@ Here is how we setup the form for adding new todos:
 def mk_input(**kw): return Input(id="new-title", name="title", placeholder="New Todo", **kw)
 
 @rt("/")
-async def get():
+def get():
     add = Form(Group(mk_input(), Button("Add")),
                hx_post="/", target_id='todo-list', hx_swap="beforeend")
     card = Card(Ul(*todos(), id='todo-list'),
@@ -80,7 +80,7 @@ Editing a todo item is handled by this route which takes the todo's id as a para
 
 ```python
 @rt("/edit/{id}")
-async def get(id:int):
+def get(id:int):
     res = Form(Group(Input(id="title"), Button("Save")),
         Hidden(id="id"), CheckboxX(id="done", label='Done'),
         hx_put="/", target_id=tid(id), id="edit")
@@ -95,7 +95,7 @@ Similarly, we can do the same for deleting todos, except we use the `delete` met
 
 ```python
 @rt("/todos/{id}")
-async def delete(id:int):
+def delete(id:int):
     todos.delete(id)
     return clear(id_curr)
 ```

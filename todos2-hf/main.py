@@ -26,7 +26,7 @@ def mk_input(**kw): return Input(id="new-title", name="title", placeholder="New 
 def clr_details(): return Div(hx_swap_oob='innerHTML', id='current-todo')
 
 @rt("/")
-async def get(request, auth):
+def get(request, auth):
     add = Form(Group(mk_input(), Button("Add")),
                hx_post="/", target_id='todo-list', hx_swap="beforeend")
     card = Card(Ul(*todos(), id='todo-list'),
@@ -36,25 +36,25 @@ async def get(request, auth):
     return Title(title), Main(top, card, cls='container')
 
 @rt("/todos/{id}")
-async def delete(id:int):
+def delete(id:int):
     todos.delete(id)
     return clr_details()
 
 @rt("/")
-async def post(todo:Todo): return todos.insert(todo), mk_input(hx_swap_oob='true')
+def post(todo:Todo): return todos.insert(todo), mk_input(hx_swap_oob='true')
 
 @rt("/edit/{id}")
-async def get(id:int):
+def get(id:int):
     res = Form(Group(Input(id="title"), Button("Save")),
         Hidden(id="id"), CheckboxX(id="done", label='Done'),
         hx_put="/", target_id=tid(id), id="edit")
     return fill_form(res, todos[id])
 
 @rt("/")
-async def put(todo: Todo): return todos.upsert(todo), clr_details()
+def put(todo: Todo): return todos.upsert(todo), clr_details()
 
 @rt("/todos/{id}")
-async def get(id:int):
+def get(id:int):
     todo = todos[id]
     btn = Button('delete', hx_delete=f'/todos/{todo.id}',
                  target_id=tid(todo.id), hx_swap="outerHTML")
