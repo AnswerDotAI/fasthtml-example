@@ -61,9 +61,7 @@ async def static(fname:str, ext:str): return FileResponse(f'{fname}.{ext}')
 async def post(prompt:str, session):
     folder = f"gens/{str(uuid.uuid4())}"
     os.makedirs(folder, exist_ok=True)
-    g = gens.insert(
-        Generation(prompt=prompt, folder=folder, session_id=session['session_id'], id=f"{gens.count}")
-    )
+    g = gens.insert(Generation(prompt=prompt, folder=folder, session_id=session['session_id']))
     generate_and_save(g.prompt, g.id, g.folder)
     clear_input =  Input(id="new-prompt", name="prompt", placeholder="Enter a prompt", hx_swap_oob='true')
     return generation_preview(g), clear_input

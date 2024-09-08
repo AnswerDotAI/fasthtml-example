@@ -104,8 +104,9 @@ def post(prompt: str, session):
     folder = f"data/gens/{str(uuid.uuid4())}"
     os.makedirs(folder, exist_ok=True)
     g = gens.insert(
-        Generation(prompt=prompt, folder=folder, session_id=session['session_id'], id=f"{gens.count}")
-    )
+        Generation(prompt=prompt,
+                    folder=folder,
+                    session_id=session['session_id']))
     generate_and_save(g.prompt, g.id, g.folder)
 
     return generation_preview(g, session), clear_input
