@@ -1,28 +1,20 @@
 from fasthtml.common import *
+from utils import RsJs
 
-'''
-code = """
-    me("[data-counter-output]", el).textContent++);
-"""
-scr = RsJsScript('counter', increment=('click', code))
-'''
+app,rt = fast_app(live=True)
 
-scr = Script('''
-proc_htmx("[data-counter]", el => {
-    me("[data-counter-increment]", el).on("click",
-        e => me("[data-counter-output]", el).textContent++);
-});''')
-
-app,rt = fast_app(hdrs=(scr,), live=True)
+r = RsJs('incrementer')
 
 def Incrementer(start=0, btn_txt='Increment'):
-    return Section(data_counter=True)(
-        Output(start, id='my-output', data_counter_output=True),
-        Button(btn_txt, data_counter_increment=True))
+    return Section(r.d)(
+        Output(start, r.output, id='my-output'),
+        Button(btn_txt, r.increment)
+    )
 
 @rt("/")
 def get():
-    return Titled('RSJS demo',
+    return Titled('RSJS Incrementer',
+        r("htmx.on({increment}, 'click', _=>{output}.value++)"),
         Incrementer(),
         Incrementer(5, 'Do it')
     )
