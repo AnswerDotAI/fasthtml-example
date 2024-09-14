@@ -51,7 +51,7 @@ async def post(request: Request):
     code = data['code']
     row = data['row']
     column = data['column']
-    
+
     try:
         response = client.completion.create(
             model=model_name,

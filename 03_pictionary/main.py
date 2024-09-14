@@ -11,9 +11,9 @@ app = FastHTML(hdrs=(picolink, Script(open("canvas.js").read(), type="module")))
 @app.get("/")
 def home():
     return Title('Drawing Demo'), Main(
-        H1("Haiku Canvas Demo"), 
+        H1("Haiku Canvas Demo"),
         Canvas(id="drawingCanvas", width="500", height="500",
-               style="border: 1px solid black; background-color: #f0f0f0;"), 
+               style="border: 1px solid black; background-color: #f0f0f0;"),
         Div("Draw something", id="caption"), cls='container')
 
 
@@ -38,5 +38,5 @@ async def process_canvas(image: str):
     caption =  message.content[0].text.replace("\n", "<br>")
     return JSONResponse({"caption": caption})
 
-if __name__ == '__main__':
-  uvicorn.run("main:app", host='0.0.0.0', port=8000, reload=True)
+serve()
+

@@ -3,7 +3,7 @@ from datetime import datetime
 from fasthtml.common import *
 
 hdrs=(Script(src="https://unpkg.com/htmx-ext-sse@2.2.1/sse.js"),)
-app,rt = fast_app(hdrs=hdrs)      
+app,rt = fast_app(hdrs=hdrs)
 
 @rt
 def index():
@@ -19,7 +19,7 @@ async def time_generator():
     while not shutdown_event.is_set():
         data = Article(datetime.now().strftime('%H:%M:%S'))
         yield sse_message(data)
-        await sleep(1)  
+        await sleep(1)
 
 @rt("/time-sender")
 async def get():

@@ -64,7 +64,7 @@ def Grid():
     return Div(*cells, id='grid')
 
 @rt('/update')
-async def put(x: int, y: int):
+def put(x: int, y: int):
     game_state['grid'][y][x] = 1 if game_state['grid'][y][x] == 0 else 0
     await update_players()
 ```
@@ -77,7 +77,7 @@ FastHTML handles WebSocket connections with ease:
 
 ```python
 @app.ws('/gol', conn=on_connect, disconn=on_disconnect)
-async def ws(msg:str, send): pass
+def ws(msg:str, send): pass
 
 player_queue = []
 async def on_connect(send): player_queue.append(send)

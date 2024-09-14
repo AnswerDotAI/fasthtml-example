@@ -13,28 +13,28 @@ thread_debug = False
 domain = "https://moodle-game.com"
 
 # Wordlist
-words = ['lips', 'caterpillar', 'ants', 'jellyfish', 'cupcake', 'seashell', 'grass', 'island', 'coat', 'bee', 
- 'eye', 'lion', 'car', 'bus', 'boy', 'knee', 'bathroom', 'ball', 'jacket', 'flag', 'snowflake', 'football', 
- 'grapes', 'bumblebee', 'music', 'book', 'lemon', 'dragon', 'dream', 'eyes', 'balloon', 'triangle', 'sunglasses', 'zebra', 
- 'feet', 'ant', 'bed', 'rocket', 'river', 'candle', 'float', 'smile', 'alligator', 'bunny', 'plant', 'snake', 'bird', 'duck', 
- 'kitten', 'earth', 'starfish', 'ear', 'monkey', 'lollipop', 'sun', 'branch', 'blanket', 'orange', 'carrot', 'cube', 'dinosaur', 
- 'hippo', 'candy', 'jail', 'cow', 'drum', 'hamburger', 'hat', 'light', 'inchworm', 'snail', 'cat', 'shirt', 'nose', 'alive', 
- 'person', 'jar', 'tail', 'motorcycle', 'whale', 'zigzag', 'suitcase', 'backpack', 'feather', 'line', 'mitten', 'woman', 'robot', 
- 'cheese', 'chimney', 'comb', 'egg', 'worm', 'zoo', 'pizza', 'fly', 'pen', 'coin', 'apple', 'baseball', 'oval', 'skateboard', 'frog', 
- 'spoon', 'horse', 'beach', 'slide', 'ladybug', 'window', 'rabbit', 'helicopter', 'desk', 'head', 'leg', 'crayon', 'clock', 'boat', 
- 'diamond', 'bug', 'ears', 'box', 'face', 'night', 'square', 'pie', 'bear', 'finger', 'banana', 'mouth', 'nail', 'cherry', 'bike', 
- 'broom', 'fire', 'sea', 'beak', 'baby', 'bowl', 'popsicle', 'lamp', 'blocks', 'bark', 'elephant', 'spider', 'rock', 'purse', 'leaf', 
- 'ship', 'shoe', 'kite', 'mountains', 'moon', 'table', 'rain', 'sheep', 'curl', 'daisy', 'snowman', 'train', 'legs', 'swing', 'mountain', 
- 'cup', 'truck', 'flower', 'glasses', 'crab', 'owl', 'ring', 'love', 'lizard', 'door', 'heart', 'button', 'giraffe', 'chicken', 
- 'chair', 'bridge', 'key', 'neck', 'ghost', 'computer', 'bow', 'bread', 'corn', 'water', 'angel', 'fork', 'bone', 'candy', 'roof', 
- 'underwear', 'drum', 'spider', 'shoe', 'smile', 'cup', 'hat', 'bird', 'kite', 'snowman', 'doll', 'skateboard', 'sleep', 'sad', 
- 'butterfly', 'elephant', 'ocean', 'book', 'egg', 'house', 'dog', 'ball', 'star', 'shirt', 'cookie', 'fish', 'bed', 'phone', 'airplane', 'nose', 
- 'apple', 'sun', 'sandwich', 'cherry', 'bubble', 'moon', 'snow', 'rocket', 'cliff', 'stingray', 'horse', 'sack', 'paper', 'drumstick', 'teapot', 
- 'plug', 'button', 'cave', 'crumb', 'children', 'bib', 'panda', 'unite', 'eel', 'cocoon', 'cook', 'city', 'stove', 'apologize', 'maze', 
- 'sunset', 'step', 'organ', 'jump', 'ribbon', 'pizza', 'pop', 'tape', 'pot', 'table', 'calendar', 
- 'squirrel', 'letter', 'coconut', 'napkin', 'hero', 'newborn', 'doghouse', 'baby', 'turkey', 'cheetah', 'sidekick', 
+words = ['lips', 'caterpillar', 'ants', 'jellyfish', 'cupcake', 'seashell', 'grass', 'island', 'coat', 'bee',
+ 'eye', 'lion', 'car', 'bus', 'boy', 'knee', 'bathroom', 'ball', 'jacket', 'flag', 'snowflake', 'football',
+ 'grapes', 'bumblebee', 'music', 'book', 'lemon', 'dragon', 'dream', 'eyes', 'balloon', 'triangle', 'sunglasses', 'zebra',
+ 'feet', 'ant', 'bed', 'rocket', 'river', 'candle', 'float', 'smile', 'alligator', 'bunny', 'plant', 'snake', 'bird', 'duck',
+ 'kitten', 'earth', 'starfish', 'ear', 'monkey', 'lollipop', 'sun', 'branch', 'blanket', 'orange', 'carrot', 'cube', 'dinosaur',
+ 'hippo', 'candy', 'jail', 'cow', 'drum', 'hamburger', 'hat', 'light', 'inchworm', 'snail', 'cat', 'shirt', 'nose', 'alive',
+ 'person', 'jar', 'tail', 'motorcycle', 'whale', 'zigzag', 'suitcase', 'backpack', 'feather', 'line', 'mitten', 'woman', 'robot',
+ 'cheese', 'chimney', 'comb', 'egg', 'worm', 'zoo', 'pizza', 'fly', 'pen', 'coin', 'apple', 'baseball', 'oval', 'skateboard', 'frog',
+ 'spoon', 'horse', 'beach', 'slide', 'ladybug', 'window', 'rabbit', 'helicopter', 'desk', 'head', 'leg', 'crayon', 'clock', 'boat',
+ 'diamond', 'bug', 'ears', 'box', 'face', 'night', 'square', 'pie', 'bear', 'finger', 'banana', 'mouth', 'nail', 'cherry', 'bike',
+ 'broom', 'fire', 'sea', 'beak', 'baby', 'bowl', 'popsicle', 'lamp', 'blocks', 'bark', 'elephant', 'spider', 'rock', 'purse', 'leaf',
+ 'ship', 'shoe', 'kite', 'mountains', 'moon', 'table', 'rain', 'sheep', 'curl', 'daisy', 'snowman', 'train', 'legs', 'swing', 'mountain',
+ 'cup', 'truck', 'flower', 'glasses', 'crab', 'owl', 'ring', 'love', 'lizard', 'door', 'heart', 'button', 'giraffe', 'chicken',
+ 'chair', 'bridge', 'key', 'neck', 'ghost', 'computer', 'bow', 'bread', 'corn', 'water', 'angel', 'fork', 'bone', 'candy', 'roof',
+ 'underwear', 'drum', 'spider', 'shoe', 'smile', 'cup', 'hat', 'bird', 'kite', 'snowman', 'doll', 'skateboard', 'sleep', 'sad',
+ 'butterfly', 'elephant', 'ocean', 'book', 'egg', 'house', 'dog', 'ball', 'star', 'shirt', 'cookie', 'fish', 'bed', 'phone', 'airplane', 'nose',
+ 'apple', 'sun', 'sandwich', 'cherry', 'bubble', 'moon', 'snow', 'rocket', 'cliff', 'stingray', 'horse', 'sack', 'paper', 'drumstick', 'teapot',
+ 'plug', 'button', 'cave', 'crumb', 'children', 'bib', 'panda', 'unite', 'eel', 'cocoon', 'cook', 'city', 'stove', 'apologize', 'maze',
+ 'sunset', 'step', 'organ', 'jump', 'ribbon', 'pizza', 'pop', 'tape', 'pot', 'table', 'calendar',
+ 'squirrel', 'letter', 'coconut', 'napkin', 'hero', 'newborn', 'doghouse', 'baby', 'turkey', 'cheetah', 'sidekick',
  'cucumber', 'crust', 'sunglasses', 'computer', 'scar', 'stick', 'grill', 'rat', 'teacher', 'farm', 'tusk',
- 'lung', 'lock', 'refrigerator', 'ambulance', 'ship', 'harmonica', 'soda', 'eagle', 'rainstorm', 'hoof', 'fern', 
+ 'lung', 'lock', 'refrigerator', 'ambulance', 'ship', 'harmonica', 'soda', 'eagle', 'rainstorm', 'hoof', 'fern',
  'platypus', 'pitchfork', 'pinecone', 'pencil', 'parent','trombone', 'midnight', 'sap', 'pharaoh','panda']
 
 # App
@@ -77,7 +77,7 @@ def Navbar(page="home"):
     document.querySelector('.navbar-toggle').addEventListener('click', function() {
         const navbarLinks = document.querySelector('.navbar-links');
         navbarLinks.classList.toggle('active');
-        
+
         // Toggle aria-expanded attribute
         const expanded = this.getAttribute('aria-expanded') === 'true' || false;
         this.setAttribute('aria-expanded', !expanded);
@@ -139,12 +139,12 @@ def active_area(session, last_game_id:int=None):
                 Canvas(id="drawingCanvas", width="512", height="512", cls='actitem canvas'), # TODO style this
                 Div(Div(B("Recent guesses:"), cls="guess", style="margin-bottom: 0.5rem;"),
                     Div(id="guess-area",
-                        hx_trigger="every 0.3s", hx_get="/guesses", 
+                        hx_trigger="every 0.3s", hx_get="/guesses",
                         hx_target="#guess-area", hx_swap="afterbegin"),
                     style="border: 10px solid #FF4136; height: 512px; width: 350px; overflow-y: auto; text-align: left;",
                     cls="actitem guessarea",
                 ),
-                cls="actcontainer", 
+                cls="actcontainer",
             ),
             id="active-area")
 
@@ -152,7 +152,7 @@ def active_area(session, last_game_id:int=None):
     if session['sid'] in player_queue:
 
         # Update last request time so they don't get pruned
-        player_queue[session['sid']]['last_request'] = time.time()  
+        player_queue[session['sid']]['last_request'] = time.time()
 
         # Estimate time remaining until the player will play:
         remaining_times = [game_max_duration - (time.time() - game.start_time) for game in active_games]
@@ -161,7 +161,7 @@ def active_area(session, last_game_id:int=None):
             estimate = int(sorted(remaining_times)[position_in_queue - 1])
         else:
             estimate = game_max_duration * len(player_queue) / max_concurrent_games
-        
+
         # Show the queue status # <<< TODO restyle
         status = Div(
             P("Game(s) full. You have been added to the queue."),
@@ -188,7 +188,7 @@ def active_area(session, last_game_id:int=None):
                         style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;"
                     ),
                 id="active-area")
-    
+
     # If they're not in an active game or the queue, show the start game button
     intro = P("Welcome to Moodle!",
               "Put your drawing skills to the test while a team of AI models try to guess your word.",
@@ -222,7 +222,7 @@ def get_recent_guesses(session):
             game_ended = True
     if game_ended:
         # Could make this a script that uses htmx.ajax in a Timeout instead of using a hidden div
-        gs.append(Hidden("endgame", hx_get=f"/active_area?last_game_id={game.id}", hx_target="#active-area", 
+        gs.append(Hidden("endgame", hx_get=f"/active_area?last_game_id={game.id}", hx_target="#active-area",
                          hx_trigger="load delay:3s",hx_swap="outerHTML", id="endgame", hx_swap_oob="outerHTML"))
         end_game(game)
     return *gs, ""
@@ -256,7 +256,7 @@ def end(session):
     # End the game
     game = [game for game in active_games if game.player == session['sid']][0]
     end_game(game)
-    
+
     # Replace active area
     return active_area(session, last_game_id=game.id)
 
@@ -309,7 +309,7 @@ def end_game(game):
     with db_lock:
         game.game_gif = gif_path
         games.update(game)
-    
+
     if True:
         final_draw = drawings[game.last_drawing]
         # Reject if no drawings
@@ -338,7 +338,7 @@ def process_canvas(image: str, session):
         game.last_drawing = drawing.id
         games.update(game)
     return {'active_game': 'yes', 'latest_image': fn}
-    
+
 # They clicked "Play A Game!" to start a game - updates active area
 @app.post("/join")
 def join(session):
@@ -429,7 +429,7 @@ def game_summary_page(game_id: int, session):
                         href=twitter_url,
                         target="_blank",
                         cls="btn btn-primary twitter-s`hare-button"),
-            P(""),)   
+            P(""),)
     content = [
         H3(f"Game {game_id} Summary"),
         P(f"Word: {game.word}"),
@@ -441,7 +441,7 @@ def game_summary_page(game_id: int, session):
         twitter_share,
         gif
     ]
-    
+
     # Twitter meta tags
     metas = [
         Meta(name="twitter:card", content="summary_large_image"),
@@ -503,19 +503,19 @@ def stats():
     )
 
 about_md = """## About
-          
+
 Moodle was born from a demo that got a little out of control. I wanted to see if any of these multi-modal
 LLMs could play pictionary. It turns out they can! And it's rather fun...
 
 ### Technical Details
-          
-This app is built with a new framework we're working on - [FastHTML](https://fastht.ml). It's a Python framework 
+
+This app is built with a new framework we're working on - [FastHTML](https://fastht.ml). It's a Python framework
 that makes it easy to build web apps with Python and HTML. It's still in development, but it's already pretty powerful!
-          
+
 The canvas (HTML/JS) sends images to the backend, which ships them off to a few different models that try to guess the word.
-          
+
 ### Future Plans
-          
+
 I think this will be a fun, quirky eval for models. I'm saving all the drawings (I hope you don't draw anything bad) and the progressions
 will make a good classification problem. Can a model guess from the final image? from the sequence? etc..."""
 
@@ -546,7 +546,7 @@ def static(fname: str, ext: str):
 
 
 # Threaded guess loop #
-# For each game, for each model, we have a thread going that 
+# For each game, for each model, we have a thread going that
 # sends the image to the model and gets the guess back
 
 ## API clients ##
@@ -660,11 +660,11 @@ class BackgroundTask(threading.Thread):
         self.interval = interval
     def run(self):
         # Debug info
-        if self.game_idx is None: 
+        if self.game_idx is None:
             if thread_debug: print(f"Task {self.task_name} is starting with func {self.func}")
-        else: 
+        else:
             if thread_debug: print(f"Task {self.task_name} is starting for game {self.game_idx} with guesser {self.func}")
-        
+
         # Run in loop
         while not self.stop_event.is_set():
             start_time = time.time()
@@ -701,7 +701,7 @@ class BackgroundTask(threading.Thread):
                     if thread_debug: print(f"Game idx {self.game_idx} guess by {guesser_name}: {guess_text} (correct: {is_correct})")
                 except Exception as e:
                     print(f"Error: {e}")
-            
+
             # Sleep for the remaining time with a bit of randomness added
             time.sleep(max(0, self.interval - (time.time() - start_time)) + random.random() * 0.5)
 
@@ -713,38 +713,31 @@ tasks = []
 
 def start_background_tasks():
     global tasks
-    if len(tasks) > 0:
-        print("Tasks already running")
-        return
+    if len(tasks) > 0: return print("Tasks already running")
     for i in range(max_concurrent_games):
         for guesser in guessers:
             task = BackgroundTask(f'game_{i}_guesser_{guesser}', stop_event, guessers[guesser], i)
             tasks.append(task)
     tasks.append(BackgroundTask('queue_pruner', stop_event, queue_pruner, interval=1))
     tasks.append(BackgroundTask('game_ender', stop_event, game_ender, interval=1))
-    for task in tasks:
-        task.start()
+    for task in tasks: task.start()
 
 def stop_background_tasks():
     print("Stopping all tasks...")
     stop_event.set()
-    for task in tasks:
-        task.join()
+    for task in tasks: task.join()
     print("All tasks stopped")
 
 @app.on_event("startup")
-async def startup_event():
-    start_background_tasks()
+async def startup_event(): start_background_tasks()
 
 @app.on_event("shutdown")
-async def shutdown_event():
-    stop_background_tasks()
+async def shutdown_event(): stop_background_tasks()
 
 if __name__ == "__main__":
-    try:
-        serve()
-    except KeyboardInterrupt:
-        pass
+    try: serve()
+    except KeyboardInterrupt: pass
     finally:
         stop_background_tasks()
         sys.exit(0)
+

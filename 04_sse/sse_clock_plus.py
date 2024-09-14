@@ -27,7 +27,7 @@ async def time_generator():
             # Maybe we can patch EventSourceResponse to run to_xml automatically if FT
             # components are detected in the data key, so we don't have to do it here
             # Note: For data, converts carriage returns to extra `data:` lines in the response
-            data=to_xml(P(datetime.now().strftime('%H:%M:%S'))), 
+            data=to_xml(P(datetime.now().strftime('%H:%M:%S'))),
             event="TimeUpdateEvent")
         await asyncio.sleep(1)
 

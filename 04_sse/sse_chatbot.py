@@ -96,7 +96,7 @@ async def get_message():
 
 
 @app.post("/send-message")
-async def send_message(msg: str):
+def send_message(msg: str):
     messages.append({"role": "user", "content": msg})
     user_msg = Div(ChatMessage(len(messages) - 1))
     messages.append({"role": "assistant", "content": ""})

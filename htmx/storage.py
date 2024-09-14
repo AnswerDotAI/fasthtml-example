@@ -11,7 +11,7 @@ def index():
                   Div(id='foo'))
 
 @rt
-async def more(sid:str): return f'{sid}: {datetime.now()}'
+def more(sid:str): return f'{sid}: {datetime.now()}'
 
 serve()
 
