@@ -28,7 +28,7 @@ class RsJs:
 
 def unqid():
     res = b85encode(uuid4().bytes)
-    return res.decode().replace('"', '').replace("'", '')
+    return res.decode().translate(str.maketrans('', '', '"\'&'))
 
 class Component(fh.FT):
     def __str__(self): return f"document.getElementById('{self.id}')"
