@@ -5,11 +5,44 @@ from PIL import Image
 
 
 # Replicate setup (for generating images)
-replicate_api_token = os.environ['REPLICATE_API_KEY']
-client = replicate.Client(api_token=replicate_api_token)  
+replicate_api_token = os.getenv('REPLICATE_API_KEY', None)
+
+if replicate_api_token:
+    client = replicate.Client(api_token=replicate_api_token)
+
+    # Generate an image and save it to the folder (in a separate thread)
+    @threaded
+    def generate_and_save(prompt, id, folder):
+        output = client.run(
+            "playgroundai/playground-v2.5-1024px-aesthetic:a45f82a1382bed5c7aeb861dac7c7d191b0fdf74d8d57c4a0e6ed7d4d0bf7d24",
+            input={
+                "width": 1024,"height": 1024,"prompt": prompt,"scheduler": "DPMSolver++",
+                "num_outputs": 1,"guidance_scale": 3,"apply_watermark": True,
+                "negative_prompt": "ugly, deformed, noisy, blurry, distorted",
+                "prompt_strength": 0.8, "num_inference_steps": 25
+            }
+        )
+        Image.open(requests.get(output[0], stream=True).raw).save(f"{folder}/{id}.png")
+        return True
+
+    print("Replicate client initialized")
+
+else:
+    # URL (for image generation)  
+    def get_url(prompt):
+        return f"https://image.pollinations.ai/prompt/{prompt.replace(' ', '%20')}?model=flux&width=1024&height=1024&seed=42&nologo=true&enhance=true"
+
+    @threaded
+    def generate_and_save(prompt, id, folder):
+        full_url = get_url(prompt)
+        Image.open(requests.get(full_url, stream=True).raw).save(f"{folder}/{id}.png")
+        return True
+
+    print(f"No Replicate API Key. Use Pollinations API (for now) for image generation")
+
 
 # gens database for storing generated image details
-tables = database('data/gens.db').t
+tables = database('data/gens.db')
 gens = tables.t.gens
 if not gens in tables.t:
     gens.create(prompt=str, id=int, folder=str, pk='id')
@@ -63,19 +96,5 @@ def post(prompt:str):
     clear_input =  Input(id="new-prompt", name="prompt", placeholder="Enter a prompt", hx_swap_oob='true')
     return generation_preview(g), clear_input
 
-# Generate an image and save it to the folder (in a separate thread)
-@threaded
-def generate_and_save(prompt, id, folder):
-    output = client.run(
-        "playgroundai/playground-v2.5-1024px-aesthetic:a45f82a1382bed5c7aeb861dac7c7d191b0fdf74d8d57c4a0e6ed7d4d0bf7d24",
-        input={
-            "width": 1024,"height": 1024,"prompt": prompt,"scheduler": "DPMSolver++",
-            "num_outputs": 1,"guidance_scale": 3,"apply_watermark": True,
-            "negative_prompt": "ugly, deformed, noisy, blurry, distorted",
-            "prompt_strength": 0.8, "num_inference_steps": 25
-        }
-    )
-    Image.open(requests.get(output[0], stream=True).raw).save(f"{folder}/{id}.png")
-    return True
 
 if __name__ == '__main__': uvicorn.run("main:app", host='0.0.0.0', port=int(os.getenv("PORT", default=5000)))
