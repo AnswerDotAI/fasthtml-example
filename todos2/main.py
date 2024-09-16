@@ -22,7 +22,7 @@ def before(req, sess):
 def _not_found(req, exc): return Titled('Oh no!', Div('We could not find that page :('))
 
 bware = Beforeware(before, skip=[r'/favicon\.ico', r'/static/.*', r'.*\.css', '/login'])
-app,rt = fast_app(before=bware,
+app,rt = fast_app(before=bware, live=True,
                   exception_handlers={404: _not_found},
                   hdrs=(SortableJS('.sortable'), MarkdownJS('.markdown')))
 
