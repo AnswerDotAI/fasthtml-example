@@ -29,7 +29,6 @@ Contributed by: [@altryne](https://x.com/altryne)
 The app is set up using FastHTML's `fast_app` function, which creates the application, routing, database connection, and data model in a single line:
 
 ```python
-python
 app, rt, texts_db, Item = fast_app('texts.db', hdrs=(tlink, dlink, picolink, MarkdownJS(), HighlightJS()), live=True, id=int, messages=list, feedback=bool, notes=str, pk='id', render=render)
 ```
 
@@ -48,10 +47,10 @@ The dummy data file contains JSON lines (JSONL) with the following structure on 
 To run the app, execute the following command:
 
 ```
-python app.py
+python main.py
 ```
 
-Open your web browser and navigate to `http://localhost:8000` to access the app.
+Open your web browser and navigate to `http://localhost:5001` to access the app.
 
 ## Customization
 
