@@ -8,7 +8,15 @@ db = database('data/utodos.db')
 # url = 'postgresql://'
 # db = Database(url)
 class User: name:str; pwd:str
-class Todo: id:int; title:str; done:bool; name:str; details:str; priority:int
+class Todo:
+    id:int; title:str; done:bool; name:str; details:str; priority:int
+    def __ft__(self):
+        ashow = A(self.title, hx_post=retr.rt(id=self.id), target_id='current-todo')
+        aedit = A('edit',     hx_post=edit.rt(id=self.id), target_id='current-todo')
+        dt = '✅ ' if self.done else ''
+        cts = (dt, ashow, ' | ', aedit, Hidden(id="id", value=self.id), Hidden(id="priority", value="0"))
+        return Li(*cts, id=f'todo-{self.id}')
+
 users = db.create(User, pk='name')
 todos = db.create(Todo)
 
@@ -21,10 +29,15 @@ def before(req, sess):
 
 def _not_found(req, exc): return Titled('Oh no!', Div('We could not find that page :('))
 
-bware = Beforeware(before, skip=[r'/favicon\.ico', r'/static/.*', r'.*\.css', '/login'])
+hdrs=(
+        SortableJS('.sortable'),
+        MarkdownJS('.markdown'),
+)
+
+bware = Beforeware(before, skip=[r'/favicon\.ico', r'/static/.*', r'.*\.js', r'.*\.css', '/login'])
 app,rt = fast_app(before=bware, live=True,
                   exception_handlers={404: _not_found},
-                  hdrs=(SortableJS('.sortable'), MarkdownJS('.markdown')))
+                  hdrs=hdrs)
 
 @app.get
 def login():
@@ -50,14 +63,6 @@ def post(login:Login, sess):
 def logout(sess):
     del sess['auth']
     return login_redir
-
-@patch
-def __ft__(self:Todo):
-    ashow = A(self.title, hx_post=retr.rt(id=self.id), target_id='current-todo')
-    aedit = A('edit',     hx_post=edit.rt(id=self.id), target_id='current-todo')
-    dt = '✅ ' if self.done else ''
-    cts = (dt, ashow, ' | ', aedit, Hidden(id="id", value=self.id), Hidden(id="priority", value="0"))
-    return Li(*cts, id=f'todo-{self.id}')
 
 @rt("/")
 def get(auth):
