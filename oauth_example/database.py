@@ -9,10 +9,11 @@ if user_counts not in db.t:
 Count = user_counts.dataclass()
 
 # Auth client setup for GitHub
+redirect_uri = "http://localhost:8000/auth_redirect"
 client = GitHubAppClient(os.getenv("AUTH_CLIENT_ID"), 
                          os.getenv("AUTH_CLIENT_SECRET"),
-                         redirect_uri="http://localhost:8000/auth_redirect")
-login_link = client.login_link()
+                         redirect_uri=redirect_uri)
+login_link = client.login_link(redirect_uri=redirect_uri)
 
 
 # Beforeware that puts the user_id in the request scope or redirects to the login page if not logged in.
@@ -50,7 +51,7 @@ def increment(auth):
 @app.get('/login')
 def login(): 
     return Div(P("You are not logged in."), 
-               A('Log in with GitHub', href=client.login_link()))
+               A('Log in with GitHub', href=login_link))
 
 # To log out, we just remove the user_id from the session.
 @app.get('/logout')
@@ -66,7 +67,7 @@ def auth_redirect(code:str, session, state:str=None):
     print(f"state: {state}") # Not used in this example.
     try:
         # The code can be used once, to get the user info:
-        info = client.retr_info(code)
+        info = client.retr_info(code, redirect_uri=redirect_uri)
         print(f"info: {info}")
         # Use client.retr_id(code) directly if you just want the id, otherwise get the id with:
         user_id = info[client.id_key]
