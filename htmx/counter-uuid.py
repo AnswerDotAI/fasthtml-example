@@ -4,9 +4,11 @@ from utils import Output,Button
 app,rt = fh.fast_app(live=True)
 
 def Incrementer(start=0, btn_txt='Increment'):
-    out = Output(start)
-    btn = Button(btn_txt, hx_on_click=f"{out}.value++")
-    return fh.Section(out, btn)
+    return fh.Section(
+        fh.Style('me button {margin: 6px;}'),
+        out := Output(start),
+        Button(btn_txt, hx_on_click=f"{out}.value++")
+    )
 
 @rt("/")
 def get():

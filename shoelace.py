@@ -3,13 +3,13 @@ from fasthtml.components import (Sl_icon, Sl_button, Sl_menu, Sl_menu_item, Sl_m
                                  Sl_breadcrumb, Sl_breadcrumb_item, Sl_breadcrumb_item, Sl_card)
 
 def sl_link(*args, **kwargs): return(jsd('@shoelace-style', 'shoelace', 'cdn', *args, prov='npm', **kwargs))
-app = FastHTML(hdrs=(
+app,rt = fast_app(pico=False, hdrs=(
     Meta(charset='UTF-8'),
     Meta(name='viewport', content='width=device-width, initial-scale=1.0'),
     sl_link('themes/light.css', typ='css'),
     sl_link('shoelace-autoloader.js', type='module'),
-    Script(src='https://cdn.tailwindcss.com')))
-rt = app.route
+    Script(src='https://cdn.tailwindcss.com')
+))
 
 def icon(nm, text, **kw): return Sl_icon(slot='prefix', name=nm, **kw), text
 def menu(nm, text, path): return Sl_menu_item(*icon(nm, text), cls='rounded-md', hx_get=path)
