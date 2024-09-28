@@ -67,16 +67,28 @@ def logout(sess):
 @rt("/")
 def get(auth):
     title = f"{auth}'s Todo list"
-    top = Grid(H1(title),
-               Div(A('logout', href='/logout'),
-                   style='text-align: right'))
-    new_inp = Input(id="new-title", name="title", placeholder="New Todo")
-    add = Form(hx_post=create, target_id='todo-list', hx_swap="afterbegin")(
-               Group(new_inp, Button("Add")))
-    frm = Form(id='todo-list', cls='sortable', hx_post=reorder, hx_trigger="end")(
-               *todos(order_by='priority'))
-    card = Card(Ul(frm), header=add, footer=Div(id='current-todo'))
-    return Title(title), Container(top, card)
+    cts = Container(
+        Grid(H1(title),
+            Div(style='text-align: right')(
+                A('logout', href='/logout')
+            )
+        ),
+        Card(
+            Ul(
+                Form(id='todo-list', cls='sortable', hx_post=reorder, hx_trigger="end")(
+                    *todos(order_by='priority')
+                )
+            ),
+            header=Form(hx_post=create, target_id='todo-list', hx_swap="afterbegin")(
+               Group(
+                    Input(id="new-title", name="title", placeholder="New Todo"),
+                    Button("Add")
+                )
+            ),
+            footer=Div(id='current-todo')
+        )
+    )
+    return Title(title), cts
 
 @rt
 def reorder(id:list[int]):
