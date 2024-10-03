@@ -50,8 +50,7 @@ def increment(auth):
 def login(request):
     redir = redir_url(request, redir_path)
     return Div(P("You are not logged in."), 
-               A('Log in with GitHub', href=client.login_link(redir)),
-    )
+               A('Log in with GitHub', href=client.login_link(redir)))
 
 # To log out, we just remove the user_id from the session.
 @app.get('/logout')
