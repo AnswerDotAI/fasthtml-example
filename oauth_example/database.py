@@ -36,7 +36,7 @@ def home(auth):
         P("Count demo"),
         P(f"Count: ", Span(user_counts[auth].count, id='count')),
         Button('Increment', hx_get='/increment', hx_target='#count'),
-        P(A('Logout', href='/logout')),  # Link to log out,
+        P(A('Logout', href='/logout'))  # Link to log out,
     )
 
 @app.get('/increment')
@@ -49,7 +49,7 @@ def increment(auth):
 @app.get('/login')
 def login(request):
     redir = redir_url(request, redir_path)
-    return Div(P("You are not logged in."),
+    return Div(P("You are not logged in."), 
                A('Log in with GitHub', href=client.login_link(redir)),
     )
 
