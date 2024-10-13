@@ -1,6 +1,5 @@
-from fasthtml import common as fh
+from fasthtml.common import *
 from uuid import uuid4
-from base64 import b85encode
 from string import Formatter
 
 def extract_names(s): return [o for _,o,_,_ in Formatter().parse(s) if o is not None]
@@ -22,21 +21,11 @@ class RsJs:
     def d(self): return {self.data(): True}
 
     def __call__(self, code):
-        s = f'proc_htmx("[{self.data()}]", el => {{ {self.expand(code)} }})'
-        return fh.Script(s)
+        return Script(f'proc_htmx("[{self.data()}]", el => {{ {self.expand(code)} }})')
 
-
-def unqid():
-    res = b85encode(uuid4().bytes)
-    return res.decode().translate(str.maketrans('', '', '"\'&'))
-
-class Component(fh.FT):
+class Component(FT):
     def __str__(self): return f"document.getElementById('{self.id}')"
 
-def component(*args, **kw):
-    if id not in kw: kw['id'] = unqid()
-    return fh.ft_hx(*args, **kw, ft_cls=Component)
-
-Output = fh.partial(component, 'output')
-Button = fh.partial(component, 'button')
+fh_cfg['ft_cls' ]=Component
+fh_cfg['auto_id' ]=True
 

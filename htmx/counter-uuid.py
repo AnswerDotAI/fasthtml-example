@@ -1,20 +1,20 @@
-from fasthtml import common as fh
-from utils import Output,Button
+from fasthtml.common import *
+import utils
 
-app,rt = fh.fast_app(live=True)
+app,rt = fast_app(live=True)
 
 def Incrementer(start=0, btn_txt='Increment'):
-    return fh.Section(
-        fh.Style('me button {margin: 6px;}'),
+    return Section(
+        Style('me button {margin: 6px;}'),
         out := Output(start),
         Button(btn_txt, hx_on_click=f"{out}.value++")
     )
 
 @rt("/")
 def get():
-    return fh.Titled('Uuid Incrementer',
+    return Titled('Uuid Incrementer',
         Incrementer(),
         Incrementer(5, 'Do it'))
 
-fh.serve()
+serve()
 
