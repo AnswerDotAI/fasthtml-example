@@ -1,7 +1,8 @@
 from fasthtml.common import *
 from datetime import datetime
 
-app,rt = fast_app(hdrs=[sid_scr], live=True)
+def before(sid:str=''): print(sid)
+app,rt = fast_app(hdrs=[sid_scr], live=True, before=Beforeware(before))
 
 @rt
 def index():
