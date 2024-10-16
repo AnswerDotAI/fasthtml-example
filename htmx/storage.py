@@ -1,18 +1,17 @@
 from fasthtml.common import *
 from datetime import datetime
 
-def before(sid:str=''): print(sid)
-app,rt = fast_app(hdrs=[sid_scr], live=True, before=Beforeware(before))
+def before(sid:str=''): print(sid or '-')
+app,rt = fast_app(hdrs=[sid_scr], before=Beforeware(before), live=True)
 
 @rt
-def index():
+def content(sid:str=''):
     return Titled('Session storage test',
-                  P('Create multiple tabs or windows and click the button in each a few times'),
-                  Button(hx_get=more, target_id="foo")('Click'),
-                  Div(id='foo'))
+        P('Create multiple tabs or windows and refresh in each a few times'),
+        Div(f'{sid}: {datetime.now()}', id='foo')
+    )
 
-@rt
-def more(sid:str): return f'{sid}: {datetime.now()}'
+with_sid(app, '/content')
 
 serve()
 
