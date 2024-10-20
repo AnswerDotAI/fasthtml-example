@@ -89,7 +89,7 @@ In this version, when a client sends a message, the server immediately sends bac
 
 ## Websockets
 
-As an alternative, we can use the `websockets` [extension of htmx](https://v1.htmx.org/extensions/web-sockets/) to handle communication between the client and the server. To do this, add the requisite headers by passing `ws_hdr=True` to the FastHTML constructor, and then use the `hx_ext="ws"` attribute in the form to specify that the form should be submitted via websockets. We specify the route, and then in the form use `ws_send=""` so that it sends a message to the websocket (as opposed to the default behavior of sending the form data):
+As an alternative, we can use the `websockets` [extension of htmx](https://v1.htmx.org/extensions/web-sockets/) to handle communication between the client and the server. To do this, add the requisite headers by passing `exts='ws'` to the FastHTML constructor, and then use the `hx_ext="ws"` attribute in the form to specify that the form should be submitted via websockets. We specify the route, and then in the form use `ws_send=""` so that it sends a message to the websocket (as opposed to the default behavior of sending the form data):
 
 ```python
 Form(Group(ChatInput(), Button("Send", cls="btn btn-primary")),
@@ -115,7 +115,7 @@ async def ws(msg:str, send):
     await send(Div(ChatMessage(messages[-1]), hx_swap_oob='beforeend', id="chatlist"))
 ```
 
-For more on websockets, see the [htmx documentation](https://v1.htmx.org/extensions/web-sockets/), the ['Game Of Life' example](https://github.com/AnswerDotAI/fasthtml-example/tree/main/00_game_of_life), the ['basic_ws.py` example](https://github.com/AnswerDotAI/fasthtml/blob/main/examples/basic_ws.py) or the [Starlette documentation](https://www.starlette.io/websockets/).
+For more on websockets, see the [htmx documentation](https://v1.htmx.org/extensions/web-sockets/), the ['Game Of Life' example](https://github.com/AnswerDotAI/fasthtml-example/tree/main/00_game_of_life), the [`basic_ws.py` example](https://github.com/AnswerDotAI/fasthtml/blob/main/examples/basic_ws.py) or the [Starlette documentation](https://www.starlette.io/websockets/).
 
 When streaming the response from the model, we could repeatedly send a chat message with the content so far, replacing the previous message. This looks fine but has some subtle issues, for example if the user starts selecting text while the message is still streaming in, the selection will be lost when the message is updated. Instead, we can add new content to the end of the message with something like this (as shown in `ws_streaming.py`):
 
@@ -131,7 +131,7 @@ A final note: in cases like this where the server sends multiple messages to the
 
 Using `Transfer-Encoding: chunked` is a way to send a response in chunks, which can be useful when the response is large and you want to start sending data to the client before the entire response is ready. This version is not much different from the [`basic.py example`], but instead of receiving the entire response from the chat model, we send it in chunks.
 
-We can use the [transfer-encoding-chunked](https://www.npmjs.com/package/htmx-ext-transfer-encoding-chunked) htmx extension to enable chunked transfer of the response. To do this, add the requisite headers by passing `ct_hdr=True` to the FastHTML constructor, and then use the `hx_ext="chunked-transfer"` attribute in the form.
+We can use the [transfer-encoding-chunked](https://www.npmjs.com/package/htmx-ext-transfer-encoding-chunked) htmx extension to enable chunked transfer of the response. To do this, add the requisite headers by passing `exts='chunked-transfer'` to the FastHTML constructor, and then use the `hx_ext="chunked-transfer"` attribute in the form.
 
 ```python
 Form(hx_post=send, hx_target="#chatlist", hx_swap="beforeend", hx_ext="chunked-transfer", hx_disabled_elt="#msg-group")

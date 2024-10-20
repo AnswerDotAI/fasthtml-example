@@ -1,6 +1,6 @@
 from fasthtml.common import *
 
-app, rt = fast_app(ws_hdr=True)
+app, rt = fast_app()
 
 
 @rt

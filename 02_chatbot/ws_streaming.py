@@ -5,7 +5,7 @@ import asyncio
 # Set up the app, including daisyui and tailwind for the chat component
 tlink = Script(src="https://cdn.tailwindcss.com"),
 dlink = Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css")
-app = FastHTML(hdrs=(tlink, dlink, picolink), ws_hdr=True)
+app = FastHTML(hdrs=(tlink, dlink, picolink), exts='ws')
 
 # Set up a chat model client and list of messages (https://claudette.answer.ai/)
 cli = AsyncClient(models[-1])
