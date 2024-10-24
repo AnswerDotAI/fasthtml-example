@@ -11,8 +11,8 @@ class User: name:str; pwd:str
 class Todo:
     id:int; title:str; done:bool; name:str; details:str; priority:int
     def __ft__(self):
-        ashow = A(self.title, hx_post=retr.rt(id=self.id), target_id='current-todo')
-        aedit = A('edit',     hx_post=edit.rt(id=self.id), target_id='current-todo')
+        ashow = A(self.title, hx_post=retr.to(id=self.id), target_id='current-todo')
+        aedit = A('edit',     hx_post=edit.to(id=self.id), target_id='current-todo')
         dt = '✅ ' if self.done else ''
         cts = (dt, ashow, ' | ', aedit, Hidden(id="id", value=self.id), Hidden(id="priority", value="0"))
         return Li(*cts, id=f'todo-{self.id}')
