@@ -1,25 +1,23 @@
 from fasthtml.common import *
-from fasthtml.oauth import GitHubAppClient, redir_url
+from fasthtml.oauth import GitHubAppClient
 import json
 
 # Auth client
-client = GitHubAppClient(os.getenv("GHAUTH_CLIENT_ID"),
-                         os.getenv("GHAUTH_CLIENT_SECRET"))
+client = GitHubAppClient(os.getenv("AUTH_CLIENT_ID"),
+                         os.getenv("AUTH_CLIENT_SECRET"))
+redirect_uri = "http://localhost:5001/redirect"
 
 app = FastHTML()
-redir_path = '/auth_redirect'
 
 @app.get('/')
-def home(request):
-    redir = redir_url(request, redir_path)
-    link = client.login_link(redir)
+def home():
+    link = client.login_link(redirect_uri)
     return P("Login link: ", A("click here", href=link))
 
-@app.get(redir_path)
+@app.get('/redirect')
 def auth_redirect(request, code:str):
-    redir = redir_url(request, redir_path)
-    info = client.retr_info(code, redir)
+    info = client.retr_info(code, redirect_uri)
     return H1("Profile info"), P(json.dumps(info))
 
-serve(port=8000)
+serve()
 
