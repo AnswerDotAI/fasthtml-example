@@ -4,7 +4,7 @@ from fasthtml.oauth import GoogleAppClient, OAuth
 cli = GoogleAppClient.from_file('/Users/jhoward/git/_nbs/oauth-test/client_secret.json')
 
 class Auth(OAuth):
-    def chk_auth(self, info, ident, session, state):
+    def get_auth(self, info, ident, session, state):
         email = info.email or ''
         if info.email_verified and email.split('@')[-1]=='answer.ai':
             return RedirectResponse('/', status_code=303)
