@@ -5,7 +5,7 @@ __all__ = ['cboard', 'css', 'gridlink', 'htmx_ws', 'app', 'rt', 'player_queue', 
            'post', 'put']
 
 # %% chess_app.ipynb 4
-from fasthtml import *
+from fasthtml.common import *
 from fastcore.utils import *
 from fastcore.xml import to_xml
 from starlette.endpoints import WebSocketEndpoint
