@@ -38,7 +38,7 @@ def post(todo:Todo): return todos.insert(todo), mk_input(hx_swap_oob='true')
 def get(id:int):
     res = Form(Group(Input(id="title"), Button("Save")),
         Hidden(id="id"), CheckboxX(id="done", label='Done'),
-        hx_put="/", target_id=tid(id), id="edit")
+        hx_put="/", hx_swap="outerHTML", target_id=tid(id), id="edit")
     return fill_form(res, todos.get(id))
 
 @rt("/")
