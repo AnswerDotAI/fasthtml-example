@@ -83,11 +83,13 @@ Editing a todo item is handled by this route which takes the todo's id as a para
 def get(id:int):
     res = Form(Group(Input(id="title"), Button("Save")),
         Hidden(id="id"), CheckboxX(id="done", label='Done'),
-        hx_put="/", target_id=tid(id), id="edit")
+        hx_put="/", hx_swap="outerHTML", target_id=tid(id), id="edit")
     return fill_form(res, todos.get(id))
 ```
 
 This allows us to dynamically fill the form with the todo's current data, allowing for easy editing.
+**TIP:** What happens when `hx_swap="outerHTML"` is removed?  
+**Answer:** When `hx_swap="outerHTML"` is omitted, the default behavior is to replace only the inner HTML of the target element. This results in a nested structure `<li><li>...</li></li>` instead of replacing the entire list item. Using `hx_swap="outerHTML"` ensures that the target element itself is replaced, preventing such nesting issues
 
 ### Deleting Todos
 
