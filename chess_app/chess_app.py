@@ -65,11 +65,11 @@ ROWS = '87654321'
 COLS = 'abcdefgh'
 def Board(lmoves: list[str] = [], selected: str = ''):
     board = []
-    for row in ROWS:
+    for col in COLS:
         board_row = []
-        for col in COLS:
+        for row  in ROWS:
             pos = f"{col}{row}"
-            cell_color = "black" if (ROWS.index(row) + COLS.index(col)) % 2 == 0 else "white"
+            cell_color = "white" if (ROWS.index(row) + COLS.index(col)) % 2 == 0 else "black"
             cell_color = 'active' if pos in lmoves else cell_color
             cell_cls = f'board-cell {cell_color}'
             if pos == selected:
