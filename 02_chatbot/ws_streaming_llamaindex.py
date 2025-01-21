@@ -76,7 +76,7 @@ async def ws(msg:str, send):
     await send(Div(ChatMessage(len(messages)-1), hx_swap_oob='beforeend', id="chatlist"))
 
     # Fill in the message content
-    async for chunk in response_stream.async_response_gen():
+    async for chunk_message in response_stream.async_response_gen():
         print(chunk_message, end='', flush=True) # test streaming with local print
         messages[-1]["content"] += chunk_message 
         await send(Span(chunk_message, hx_swap_oob=swap, id=f"chat-content-{len(messages)-1}"))
