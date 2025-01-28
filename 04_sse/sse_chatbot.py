@@ -104,14 +104,10 @@ def send_message(msg: str):
     assistant_msg = Div(
         ChatMessage(
             len(messages) - 1,
-            hx_ext="sse",
-            sse_connect="/get-message",
-            sse_swap="message",
-            sse_close="close",
-            hx_swap="beforeend",
-        )
+            hx_ext="sse", sse_connect="/get-message", sse_swap="message", sse_close="close",
+            hx_swap="beforeend")
     )
     return user_msg, assistant_msg, ChatInput()
 
-
 serve()
+
