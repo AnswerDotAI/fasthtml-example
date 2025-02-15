@@ -4,11 +4,11 @@ from starlette.responses import StreamingResponse
 import asyncio
 
 # Set up the app, including daisyui and tailwind for the chat component
-hdrs = (picolink,
-        Script(src="https://cdn.tailwindcss.com"),
-        Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css"))
+tlink = Script(src="https://cdn.tailwindcss.com"),
+dlink = Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css")
+hdrs = (picolink, tlink, dlink)
 
-app = FastHTML(hdrs=hdrs, ct_hdr=True, cls="p-4 max-w-lg mx-auto", live=True, debug=True)
+app = FastHTML(hdrs=hdrs, ct_hdr=True, cls="p-4 max-w-lg mx-auto", exts="chunked-transfer", live=True, debug=True)
 
 @app.route("/{fname:path}.{ext:static}")
 async def get(fname:str, ext:str): 
