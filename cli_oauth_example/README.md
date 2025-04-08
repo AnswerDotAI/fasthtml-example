@@ -1,8 +1,7 @@
 # CLI Authentication with OAuth Example
 
-This example demonstrates how to implement OAuth authentication for command-line applications using FastHTML.
-
-These scripts show how to create a CLI application that can authenticate with OAuth providers (like Google, GitHub) without requiring users to manually copy tokens. This pattern is used by popular CLIs like GitHub CLI and Railway CLI.
+This example shows how to implement OAuth authentication for CLI apps using FastHTML.
+It allows users to authenticate with providers like Google and GitHub without manually copying tokens - similar to popular CLIs like GitHub and Railway.
 
 ## Files
 
