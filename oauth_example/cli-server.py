@@ -3,27 +3,30 @@ from fasthtml.oauth import GoogleAppClient, redir_url
 
 app,rt = fast_app()
 pc_store = {}
-cli = GoogleAppClient.from_file('solveit-creds.json')
+cli = GoogleAppClient.from_file('creds.json')
+redir_path = '/redirect'
 
 @rt
 def cli_login(request, paircode:str):
-    redir = redir_url(request, '/redirect')
+    redir = redir_url(request, redir_path)
     pc_store[paircode] = None
-    return cli.login_link(redir, state=paircode)
+    return cli.login_link(redir_url(request, redir_path), state=paircode)
 
-@rt
+@rt(redir_path)
 def redirect(request, code:str, state:str=None):
-    redir = redir_url(request, '/redirect')
+    redir = redir_url(request, redir_path)
     info = cli.retr_info(code, redir)
     if state and state in pc_store:
         pc_store[state] = cli.token["access_token"]
         return 'complete'
-    else: return str((state,pc_store))
+    else: return f"Failed to find {state} in {pc_store}"
 
 @rt
-def token(paircode:str): return pc_store.pop(paircode, '')
+def token(paircode:str):
+    if pc_store.get(paircode, ''): return pc_store.pop(paircode)
+    return ''
 
 @rt
-def index(): return "OAuth CLI Login Server"
+def index(): return pc_store
 
 serve()

@@ -1,5 +1,6 @@
 import secrets, httpx, webbrowser
 from fastcore.utils import *
+from fastcore.script import *
 from time import time, sleep
 
 def poll_token(paircode, host, interval=1, timeout=180):

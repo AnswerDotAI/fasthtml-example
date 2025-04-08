@@ -1,3 +1,5 @@
+creds.json
+auth_token.txt
 assets/
 .sesskey
 *.db-*
