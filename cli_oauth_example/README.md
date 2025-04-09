@@ -32,57 +32,89 @@ The authentication flow follows these steps:
    - The client generates a random `paircode` as a unique identifier for this authentication session
    - This `paircode` connects the CLI process to the browser authentication flow
 
+   ```python
+   # From cli-client.py
+   paircode = secrets.token_urlsafe(16)
+   ```
+
 2. **Server Communication**:
    - The client sends the `paircode` to the server
    - The server stores this `paircode` temporarily and returns a login URL
    - The login URL includes the `paircode` as state parameter
+
+   ```python
+   # From cli-client.py
+   url = f'http://{host}/cli_login?paircode={paircode}'
+   login_url = httpx.get(url).text
+   ```
+
+   ```python
+   # From cli-server.py
+   @rt
+   def cli_login(request, paircode:str):
+       redir = redir_url(request, redir_path)
+       pc_store[paircode] = None
+       return cli.login_link(redir_url(request, redir_path), state=paircode)
+   ```
 
 3. **User Authentication**:
    - The client opens the login URL in the user's browser
    - The user authenticates with the OAuth provider
    - After approval, the provider redirects back with an authorization code (named `code` in the `cli-server.py`)
 
+   ```python
+   # From cli-client.py
+   webbrowser.open(login_url)
+   ```
+
 4. **Token Exchange**:
    - The server receives the authorization code and the state (`paircode`)
    - It exchanges the temporary authorization code for a longer-lived `access_token`
    - The server associates this `access_token` with the original `paircode`
+
+   ```python
+   # From cli-server.py
+   @rt(redir_path)
+   def redirect(request, code:str, state:str=None):
+       redir = redir_url(request, redir_path)
+       info = cli.retr_info(code, redir)
+       if state and state in pc_store:
+           pc_store[state] = cli.token["access_token"]
+           return 'complete'
+       else: return f"Failed to find {state} in {pc_store}"
+   ```
 
 5. **Token Retrieval**:
    - The client polls the server asking for the token using the `paircode`
    - Once available, the server returns the `access_token` and removes it from storage
    - The client saves this token locally for future authenticated requests
 
-Visual representation of the flow:
+   ```python
+   # From cli-server.py
+   @rt
+   def token(paircode:str):
+       if pc_store.get(paircode, ''): return pc_store.pop(paircode)
+       return ''
+   ```
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant Client
-    participant Browser
-    participant Server
-    participant OAuth Provider
-    
-    Client->>Client: Generate random paircode
-    Client->>Server: GET /cli_login with paircode
-    Server->>Server: Store paircode in pc_store
-    Server->>Client: Return login_url with state=paircode
-    Client->>Browser: Open login_url
-    Browser->>OAuth Provider: Request authentication
-    User->>OAuth Provider: Login and authorize
-    OAuth Provider->>Browser: Redirect with code (authorization code)
-    Browser->>Server: GET /redirect with code & state
-    Server->>OAuth Provider: Exchange code for access_token
-    OAuth Provider->>Server: Return access_token
-    Server->>Server: Store access_token with paircode in pc_store
-    
-    loop Until token received or timeout
-        Client->>Server: GET /token with paircode
-        Server->>Client: Empty response if token not ready
-    end
-    
-    Server->>Client: Return access_token and remove from pc_store
-    Client->>Client: Save access_token to token_file
-```
+   ```python
+   # From cli-client.py
+   def poll_token(paircode, host, interval=1, timeout=180):
+       "Poll server for token until received or timeout"
+       start = time()
+       while time()-start < timeout:
+           resp = httpx.get(f"http://{host}/token?paircode={paircode}").raise_for_status()
+           if resp.text.strip(): return resp.text
+           sleep(interval)
+
+   ...
+
+   token = poll_token(paircode, host)
+   if token:
+       Path(token_file).write_text(token)
+       print(f"Authentication successful! Token saved to {token_file}")
+   else: print("Authentication timed out")
+   ```
 
 ## Final Notes
 
