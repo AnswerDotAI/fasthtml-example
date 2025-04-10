@@ -54,7 +54,7 @@ def Home():
     pause_btn = Button('Pause', id='pause', cls='col-xs-2', hx_put='/pause', hx_target='#gol', hx_swap='none')
     reset_btn = Button('Reset', id='reset', cls='col-xs-2', hx_put='/reset', hx_target='#gol', hx_swap='none')
     main = Main(gol, Div(run_btn, pause_btn, reset_btn, cls='row center-xs'), hx_ext="ws", ws_connect="/gol")
-    footer = Footer(P('Made by Nathan Cooper. Check out the code', AX('here', href='https://github.com/AnswerDotAI/fasthtml-example/tree/main/game_of_life', target='_blank')))
+    footer = Footer(P('Made by Nathan Cooper. Check out the code ', AX('here.', href='https://github.com/AnswerDotAI/fasthtml-example/tree/main/00_game_of_life', target='_blank')))
     return Title('Game of Life'), main, footer
 
 @rt('/')
