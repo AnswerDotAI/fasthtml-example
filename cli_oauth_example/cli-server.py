@@ -8,7 +8,6 @@ redir_path = '/redirect'
 
 @rt
 def cli_login(request, paircode:str):
-    redir = redir_url(request, redir_path)
     pc_store[paircode] = None
     return cli.login_link(redir_url(request, redir_path), state=paircode)
 
