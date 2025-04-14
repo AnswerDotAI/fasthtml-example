@@ -5,24 +5,28 @@ It allows users to authenticate with providers like Google and GitHub without ma
 
 ## Files
 
-- `cli-server.py` - The server component that handles OAuth redirects and token management
-- `cli-client.py` - The client component that initiates login and stores the authentication token
+- `server.py` - The server component that handles OAuth redirects and token management
+- `client-login.py` - The client component that initiates login and stores the authentication token
+- `client-do.py` - A client that uses the saved authentication to make requests
 
 ## Usage
 
 1. Start the server:
    ```
-   python cli-server.py
+   python server.py
    ```
 
-2. In another terminal, run the client:
+2. In another terminal, run the client to authenticate:
    ```
-   python cli-client.py
+   python client-login.py
    ```
 
 3. A browser window will open for authentication
-4. After successful login, the access token is saved to `auth_token.txt`
-5. The client can now use the access token to make authenticated requests
+4. After successful login, the session cookies are saved to `auth_token.txt`
+5. You can now make authenticated API calls using the saved session:
+   ```
+   python client-do.py
+   ```
 
 ## How It Works
 
@@ -33,7 +37,7 @@ The authentication flow follows these steps:
    - This `paircode` connects the CLI process to the browser authentication flow
 
    ```python
-   # From cli-client.py
+   # From client-login.py
    paircode = secrets.token_urlsafe(16)
    ```
 
@@ -43,16 +47,15 @@ The authentication flow follows these steps:
    - The login URL includes the `paircode` as state parameter
 
    ```python
-   # From cli-client.py
+   # From client-login.py
    url = f'http://{host}/cli_login?paircode={paircode}'
    login_url = httpx.get(url).text
    ```
 
    ```python
-   # From cli-server.py
+   # From server.py
    @rt
-   def cli_login(request, paircode:str):
-       redir = redir_url(request, redir_path)
+   async def cli_login(request, paircode:str):
        pc_store[paircode] = None
        return cli.login_link(redir_url(request, redir_path), state=paircode)
    ```
@@ -63,61 +66,74 @@ The authentication flow follows these steps:
    - After approval, the provider redirects back with an authorization code (named `code` in the `cli-server.py`)
 
    ```python
-   # From cli-client.py
+   # From client-login.py
    webbrowser.open(login_url)
    ```
 
-4. **Token Exchange**:
+4. **Authentication Processing**:
    - The server receives the authorization code and the state (`paircode`)
-   - It exchanges the temporary authorization code for a longer-lived `access_token`
-   - The server associates this `access_token` with the original `paircode`
+   - It exchanges the code for user authentication information
+   - The server associates this auth ID with the original `paircode`
+   - If the user is new, they are added to the database
 
    ```python
-   # From cli-server.py
+   # From server.py
    @rt(redir_path)
-   def redirect(request, code:str, state:str=None):
+   async def redirect(request, code:str, state:str=None):
        redir = redir_url(request, redir_path)
-       info = cli.retr_info(code, redir)
+       auth = cli.retr_id(code, redir)
        if state and state in pc_store:
-           pc_store[state] = cli.token["access_token"]
+           pc_store[state] = auth
+           if auth not in users: users.insert(User(auth=auth))
            return 'complete'
        else: return f"Failed to find {state} in {pc_store}"
    ```
 
-5. **Token Retrieval**:
-   - The client polls the server asking for the token using the `paircode`
-   - Once available, the server returns the `access_token` and removes it from storage
-   - The client saves this token locally for future authenticated requests
+5. **Session Creation and Retrieval**:
+   - The client polls the server asking for authentication using the `paircode`
+   - Once available, the server creates a session with the auth ID and returns it
+   - The client saves the session cookies locally for future authenticated requests
 
    ```python
-   # From cli-server.py
+   # From server.py
    @rt
-   def token(paircode:str):
-       if pc_store.get(paircode, ''): return pc_store.pop(paircode)
-       return ''
+   async def token(paircode:str, sess):
+       if pc_store.get(paircode, ''):
+           auth = pc_store.pop(paircode)
+           sess['auth'] = auth
+           return auth
    ```
 
    ```python
-   # From cli-client.py
+   # From client-login.py
    def poll_token(paircode, host, interval=1, timeout=180):
        "Poll server for token until received or timeout"
        start = time()
+       client = httpx.Client()
        while time()-start < timeout:
-           resp = httpx.get(f"http://{host}/token?paircode={paircode}").raise_for_status()
-           if resp.text.strip(): return resp.text
+           resp = client.get(f"http://{host}/token?paircode={paircode}").raise_for_status()
+           if resp.text.strip(): return dict(client.cookies)
            sleep(interval)
-
-   ...
-
-   token = poll_token(paircode, host)
-   if token:
-       Path(token_file).write_text(token)
-       print(f"Authentication successful! Token saved to {token_file}")
-   else: print("Authentication timed out")
+           
+   # Save the session cookies
+   cookies = poll_token(paircode, host)
+   if cookies:
+       with open(token_file, 'w') as f: json.dump(cookies, f)
+       print(f"Token saved to {token_file}")
    ```
 
-## Final Notes
+6. **Using the Authentication**:
+   - The client loads the saved session cookies
+   - It applies them to HTTP requests to authenticate with the server
+   - The server identifies the user based on the session cookie
 
-The server uses a dictionary to store paircodes and access tokens. In production, consider using a database.
+   ```python
+   # From client-do.py
+   def get_client(cookie_file):
+       client = httpx.Client()
+       cookies = Path(cookie_file).read_json()
+       client.cookies.update(cookies)
+       return client
+   ```
 
 For more detailed information about OAuth implementation in FastHTML, see the [OAuth documentation](https://fastht.ml/docs/explains/oauth.html).
