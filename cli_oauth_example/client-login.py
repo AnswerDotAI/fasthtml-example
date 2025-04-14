@@ -1,4 +1,4 @@
-import secrets, httpx, webbrowser
+import secrets, httpx, webbrowser, json
 from fastcore.utils import *
 from fastcore.script import *
 from time import time, sleep
@@ -6,9 +6,10 @@ from time import time, sleep
 def poll_token(paircode, host, interval=1, timeout=180):
     "Poll server for token until received or timeout"
     start = time()
+    client = httpx.Client()
     while time()-start < timeout:
-        resp = httpx.get(f"http://{host}/token?paircode={paircode}").raise_for_status()
-        if resp.text.strip(): return resp.text
+        resp = client.get(f"http://{host}/token?paircode={paircode}").raise_for_status()
+        if resp.text.strip(): return dict(client.cookies)
         sleep(interval)
 
 @call_parse
@@ -22,9 +23,9 @@ def auth_cli(
     login_url = httpx.get(url).text
     print(f"Opening browser for authentication...")
     webbrowser.open(login_url)
-    token = poll_token(paircode, host)
-    if token:
-        Path(token_file).write_text(token)
-        print(f"Authentication successful! Token saved to {token_file}")
+    cookies = poll_token(paircode, host)
+    if cookies:
+        with open(token_file, 'w') as f: json.dump(cookies, f)
+        print(f"Token saved to {token_file}")
     else: print("Authentication timed out")
 
