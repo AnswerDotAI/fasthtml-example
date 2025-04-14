@@ -5,7 +5,7 @@ from fastcore.script import *
 def get_client(cookie_file):
     client = httpx.Client()
     cookies = Path(cookie_file).read_json()
-    for k,v in cookies.items(): client.cookies.set(k, v)
+    client.cookies.update(cookies)
     return client
 
 @call_parse
@@ -18,4 +18,3 @@ def auth_cli(
     url = f'http://{host}/secured'
     res = client.get(url).text
     print(res)
-
