@@ -34,7 +34,7 @@ async def token(paircode:str, sess):
         return auth
 
 @rt
-async def secured(sess, auth):
+async def secured(sess):
     return sess['auth']
 
 @rt

@@ -63,7 +63,7 @@ The authentication flow follows these steps:
 3. **User Authentication**:
    - The client opens the login URL in the user's browser
    - The user authenticates with the OAuth provider
-   - After approval, the provider redirects back with an authorization code (named `code` in the `cli-server.py`)
+   - After approval, the provider redirects back with an authorization code (named `code` in the `server.py`)
 
    ```python
    # From client-login.py
@@ -134,6 +134,20 @@ The authentication flow follows these steps:
        cookies = Path(cookie_file).read_json()
        client.cookies.update(cookies)
        return client
+
+   client = get_client(token_file)
+   url = f'http://{host}/secured'
+   res = client.get(url).text
+   print(res)
    ```
+
+   ```python
+   # From server.py - the secured endpoint
+   @rt
+   async def secured(sess):
+       return sess['auth']
+   ```
+
+   When the `/secured` endpoint is called, FastHTML automatically extracts the auth value from the session cookie. If authentication is valid, the endpoint returns the user's auth ID. If not, the request would fail because the session wouldn't contain valid authentication.
 
 For more detailed information about OAuth implementation in FastHTML, see the [OAuth documentation](https://fastht.ml/docs/explains/oauth.html).
