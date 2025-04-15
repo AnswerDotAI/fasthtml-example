@@ -148,6 +148,6 @@ The authentication flow follows these steps:
        return sess['auth']
    ```
 
-   When the `/secured` endpoint is called, FastHTML automatically extracts the auth value from the session cookie. If authentication is valid, the endpoint returns the user's auth ID. If not, the request would fail because the session wouldn't contain valid authentication.
+   When the `/secured` endpoint is called, it demonstrates authentication by retrieving the auth value from the session. This endpoint verifies and returns the user's identity (authentication) but doesn't implement authorization logic to control access. If the session doesn't contain an 'auth' value, the request would fail with a KeyError. To add authorization checks you could use FastHTML's OAuth class to manage access control.
 
 For more detailed information about OAuth implementation in FastHTML, see the [OAuth documentation](https://fastht.ml/docs/explains/oauth.html).
