@@ -35,7 +35,7 @@ async def token(paircode:str, sess):
 
 @rt
 async def secured(sess):
-    return sess['auth']
+    return f"You are authenticated as: {sess['auth']}"
 
 @rt
 def index(): return pc_store
