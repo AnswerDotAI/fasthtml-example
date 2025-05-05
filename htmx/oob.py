@@ -1,7 +1,4 @@
 from fasthtml.common import *
-from asyncio import sleep
-from random import randint
-import secrets
 
 app,rt = fast_app()
 
@@ -13,7 +10,7 @@ def link():
         Div(P('thing C'), hx_swap_oob='afterend:#dest'),
         Div(P('thing D'), hx_swap_oob='afterend:#dest'),
         Div(P('thing E'), hx_swap_oob='innerHTML', id='dust'),
-        P('thing E', hx_swap_oob='true', id='dust'),
+        P('thing F', hx_swap_oob='true', id='dost'),
     )
 
 @rt
