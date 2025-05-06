@@ -1,3 +1,6 @@
+uv
+node_modules/
+out/
 creds.json
 auth_token.txt
 assets/
