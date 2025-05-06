@@ -6,25 +6,35 @@ app,rt = fast_app()
 def link():
     return (
         P('thing A'),
-        Div(P('thing B'), hx_swap_oob='afterend:#dest'),
-        Div(P('thing C'), hx_swap_oob='afterend:#dest'),
-        Div(P('thing D'), hx_swap_oob='afterend:#dest'),
-        Div(P('thing E'), hx_swap_oob='innerHTML', id='dust'),
-        P('thing F', hx_swap_oob='true', id='dost'),
+        P('thing B'),
+        Div(P('thing C'), hx_swap_oob='afterend:#first'),
+        Div(P('thing D'), hx_swap_oob='afterend:#first'),
+        Div(P('thing E'), hx_swap_oob='afterend:#first'),
+        Div(P('thing F'), hx_swap_oob='innerHTML', id='second'),
+        Div(P('thing G'), hx_swap_oob='beforeend:#second'),
+        Div(P('thing H'), hx_swap_oob='beforeend:#second'),
+        Div(P('thing I'), hx_swap_oob='beforeend:#second'),
+        P('thing J', hx_swap_oob='true', id='third'),
     )
 
 @rt
 def index():
     cts = (
-        Button('click', hx_target='#dest', hx_get=link, hx_swap='afterend'),
-        P('dest'),
-        Div(id='dest'),
-        P('dust'),
-        Div(id='dust'),
-        P('dost'),
-        Div(id='dost'),
+        Button('click', hx_target='#first', hx_get=link, hx_swap='afterend'),
+        Grid(
+            Div(
+                H3('first'),
+                Div(id='first'),
+            ), Div(
+                H3('second'),
+                Div(id='second'),
+            ), Div(
+                H3('third'),
+                Div(id='third'),
+            )
+        )
     )
-    return Titled('OOB demo', *cts)
+    return Titled('HTMX swaps demo', *cts)
 
 serve()
 
