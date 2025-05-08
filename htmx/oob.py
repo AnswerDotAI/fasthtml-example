@@ -22,16 +22,9 @@ def index():
     cts = (
         Button('click', hx_target='#first', hx_get=link, hx_swap='afterend'),
         Grid(
-            Div(
-                H3('first'),
-                Div(id='first'),
-            ), Div(
-                H3('second'),
-                Div(id='second'),
-            ), Div(
-                H3('third'),
-                Div(id='third'),
-            )
+            Div( H3('first'),  Div(id='first' ) ),
+            Div( H3('second'), Div(id='second') ),
+            Div( H3('third'),  Div(id='third' ) )
         )
     )
     return Titled('HTMX swaps demo', *cts)
