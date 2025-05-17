@@ -4,7 +4,9 @@ app = FastHTML(middleware=[cors_allow])
 rt = app.route
 
 @rt
-def index(q:str): return q
+def index(d:dict, q:str=""):
+    print(str(d)[:1000])
+    return q
 
 serve()
 
