@@ -32,10 +32,9 @@ def add_credential(response:str, data:dict, session, request):
     return P('registered!')
 
 regevt = '''
-(async () => {
-    let att = await startRegistration( { optionsJSON: %s } );
-    htmx.ajax('POST', '/add_credential', { values: att, target:'#result' });
-})();
+startRegistration({ optionsJSON: %s }).then(r => {
+    htmx.ajax('POST', '/add_credential', { values: r, target:'#result' });
+});
 '''
 
 def name2uid(name): return urlsafe_b64encode(name.encode(utf))
@@ -53,10 +52,9 @@ def register(username:str, session, request):
     return Script(regevt % options_to_json(creation_opt))
 
 authevt = """
-(async () => {
-    assertion = await SimpleWebAuthnBrowser.startAuthentication( {optionsJSON: %s} );
-    htmx.ajax('POST', '/verify_auth', { values: assertion, target:'#result' });
-})();
+SimpleWebAuthnBrowser.startAuthentication({ optionsJSON: %s }).then(r => {
+    htmx.ajax('POST', '/verify_auth', { values: r, target:'#result' });
+});
 """
 
 @rt
