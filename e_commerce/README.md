@@ -68,17 +68,18 @@ def dashboard(sess):
 Handles Stripe webhooks to update user coins after successful payment:
 
 ```python
-@rt
 async def webhook(req):
     payload = await req.body()
-    event = stripe.Webhook.construct_event(payload, req.headers.get('stripe-signature'),
-                                          os.environ['STRIPE_WEBHOOK_SECRET'])
-    
+    try: event = stripe.Webhook.construct_event(payload, req.headers.get('stripe-signature'),
+                                                os.environ['STRIPE_WEBHOOK_SECRET'])
+    except Exception as e: return Response("Webhook error", status_code=400)
+
     if event.type == 'checkout.session.completed':
         event_data = event.data.object
         user = db.users('email=?', (event_data.customer_details.email,))[0]
         user.coins += 50
         db.users.update(user)
+    return Response(status_code=200)
 ```
 
 ## Setup
@@ -91,9 +92,8 @@ async def webhook(req):
 4. Go to "Credentials" → "Create Credentials" → "OAuth 2.0 Client IDs"
 5. Configure the OAuth consent screen if prompted
 6. Set Application type to "Web application"
-7. Add `http://localhost:5001` to "Authorized JavaScript origins"
-8. Add `http://localhost:5001/redirect` to "Authorized redirect URIs"
-9. Copy the Client ID and Client Secret
+7. Add `http://localhost:5001/redirect` to "Authorized redirect URIs"
+8. Copy the Client ID and Client Secret
 
 ### 2. Stripe Setup
 

@@ -1,4 +1,4 @@
 fastlite
-faststripe>=2025.05.28.1
+faststripe==2025.05.28.1
 python-fasthtml
 stripe
