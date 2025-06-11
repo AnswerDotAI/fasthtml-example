@@ -1,7 +1,10 @@
 from asyncio import sleep,create_task
+from contextlib import asynccontextmanager
 from datetime import datetime
 from fasthtml.common import *
 from random import random
+
+app,rt = fast_app(exts='ws')
 
 async def bg():
     while True:
@@ -12,8 +15,8 @@ async def life(o):
     create_task(bg())
     yield
 
-app,rt = fast_app(exts='ws', lifespan=life)
-send = setup_ws(app)
+send = app.setup_ws()
+app.set_lifespan(life)
 
 @rt
 def index():
