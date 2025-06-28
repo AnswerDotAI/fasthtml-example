@@ -12,7 +12,8 @@ class User: id: int; email: str; oauth_id: str; credits: int = 100
 class Transaction: id: int; uid: int; amount: int
 
 db = database('e_comm.db')
-db.users = db.create(User, transform=True, )
+db.users = db.create(User, transform=True)
+# Use a transaction payment model for easier auditing
 db.transactions = db.create(Transaction, transform=True, foreign_keys=[('uid', 'user')])
 
 @patch
