@@ -1,6 +1,7 @@
 from fasthtml.common import *
 import asyncio
 import sys
+import random
 
 if __name__ == "__main__": sys.exit("Run this app with `uvicorn main:app`")
 
@@ -52,8 +53,9 @@ def Home():
     gol = Div(Grid(), id='gol', cls='row center-xs')
     run_btn = Button('Run', id='run', cls='col-xs-2', hx_put='/run', hx_target='#gol', hx_swap='none')
     pause_btn = Button('Pause', id='pause', cls='col-xs-2', hx_put='/pause', hx_target='#gol', hx_swap='none')
+    random_btn = Button('Random', id='random', cls='col-xs-2', hx_put='/random', hx_target='#gol', hx_swap='none')
     reset_btn = Button('Reset', id='reset', cls='col-xs-2', hx_put='/reset', hx_target='#gol', hx_swap='none')
-    main = Main(gol, Div(run_btn, pause_btn, reset_btn, cls='row center-xs'), hx_ext="ws", ws_connect="/gol")
+    main = Main(gol, Div(run_btn, pause_btn, random_btn, reset_btn, cls='row center-xs'), hx_ext="ws", ws_connect="/gol")
     footer = Footer(P('Made by Nathan Cooper. Check out the code', AX('here', href='https://github.com/AnswerDotAI/fasthtml-example/tree/main/game_of_life', target='_blank')))
     return Title('Game of Life'), main, footer
 
@@ -88,6 +90,11 @@ async def put(x: int, y: int):
 @rt('/run')
 async def put():
     game_state['running'] = True
+    await update_players()
+
+@rt("/random")
+async def put():
+    game_state['grid'] = [[random.randint(0, 1) for _ in range(20)] for _ in range(20)]
     await update_players()
 
 @rt("/reset")
