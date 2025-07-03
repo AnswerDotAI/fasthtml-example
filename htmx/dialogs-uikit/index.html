@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTMX + UIKit Dialog</title>
+  
+  <!-- UIKit CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.17.12/dist/css/uikit.min.css" />
+
+  <!-- HTMX -->
+  <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+
+  <!-- UIKit JS -->
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.12/dist/js/uikit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.12/dist/js/uikit-icons.min.js"></script>
+</head>
+<body class="uk-padding">
+
+  <h2>Dialog Example using HTMX + UIKit</h2>
+
+  <!-- Button triggers modal -->
+  <button class="uk-button uk-button-primary" 
+          hx-get="dialog-content.html" 
+          hx-target="#dialog-content" 
+          hx-trigger="click"
+          uk-toggle="target: #my-modal">
+    Open Dialog
+  </button>
+
+  <!-- Modal Dialog -->
+  <div id="my-modal" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+      <button class="uk-modal-close-default" type="button" uk-close title="Close dialog"></button>
+      <div id="dialog-content">
+        <!-- HTMX will load content here -->
+        <div class="uk-text-center">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
