@@ -4,7 +4,6 @@ const term = new Terminal();
 const fitAddon = new FitAddon();
 term.loadAddon(fitAddon);
 term.open(document.getElementById('terminal'));
-// fitAddon.fit();
 
 const socket = new WebSocket(`/ws`);
 
