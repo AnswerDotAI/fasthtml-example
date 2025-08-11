@@ -1,43 +1,61 @@
 from fasthtml.common import *
-from monsterui.all import *
-from threading import Thread
 
-import asyncio, os, pty, select
+import asyncio, fcntl, os, pty, select, signal, struct, termios
 
-def spawn_shell():
-    pid, fd = pty.fork()
-    if pid == 0: os.execvp(os.environ.get("SHELL", "/bin/bash"), ["bash"])
-    return fd
+class MiniTerm:
+    def __init__(self): self.fd,self.pid = None,None
 
-def read_pty(fd): 
-    'Read from PTY and print output'
-    try:
-        r,_,_ = select.select([fd], [], [], 0.1)
-        if r: return os.read(fd, 1024).decode()
-    except OSError as e: print(e)
+    def read_pty(self): 
+        "Read from PTY and print output"
+        try:
+            r,*_ = select.select([self.fd], [], [], 0.01)
+            if r: return os.read(self.fd, 1024).decode()
+        except OSError as e: print(e)
 
-hdrs = (Script(src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js", type="module"),    # xterm glue code
-        Script(src="/static/terminal.js", type="module"),    # xterm glue code
-        Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css"),
-        Theme.blue.headers())
+    async def stream(self, send):
+        'Continuously read from PTY and send to WebSocket'
+        while True:
+            if (o := self.read_pty()): await send(o)
+            await asyncio.sleep(0.01)
+
+    def spawn(self, send):
+        "Fork process and replace child with solveit login shell"
+        if self.fd: return
+        self.pid,self.fd = pty.fork()
+        if self.pid == 0: os.execvp("bash", ["bash", "-l"])
+        self.task = asyncio.create_task(self.stream(send))
+
+    def stop(self):
+        if self.fd: self.task.cancel()
+        try: os.killpg(os.getpgid(self.pid), signal.SIGTERM)
+        except (OSError,ProcessLookupError): pass  # Process may have already terminated
+        os.close(self.fd)
+        self.fd = None
+
+    def write(self, msg:str):
+        'Write incoming message to existing PTY - stream handles output'
+        if self.fd: os.write(self.fd, msg.encode())
+
+hdrs = (Script(src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js", type="module"),
+        Script(src="/static/terminal.js", type="module"),
+        Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css"))
 
 app, rt = fast_app(hdrs=hdrs,routes=(Mount('/static', StaticFiles(directory=f'./static')),))
 
-async def on_conn(send):
-    global fd
-    fd = spawn_shell()
-    await send(read_pty(fd))
-async def on_disconn(*args): os.close(fd)
+async def on_conn(send):  term.spawn(send)
+async def on_disconn(*_): term.stop()
 
 @app.ws('/ws', conn=on_conn, disconn=on_disconn)
-async def on_message(msg: str, send):
+async def on_message(msg:str='', cols:int=0, rows:int=0):
     'Write incoming message to existing PTY, then read from it.'
-    os.write(fd, msg.encode())
-    await asyncio.sleep(.1)
-    await send(read_pty(fd))
+    if msg: term.write(msg)
+    elif cols and term.fd:
+        fcntl.ioctl(term.fd, termios.TIOCSWINSZ, struct.pack('HHHH', rows, cols, 0, 0))
 
 @rt
 def index():
+    global term
+    term = MiniTerm()
     card = Card(Div(id='terminal', cls="w-full h-[600px] bg-black text-white"),
                 header=H4("Web Terminal"), cls="mt-6")
     return Title("Terminal Demo"), *hdrs, card
