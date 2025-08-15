@@ -12,7 +12,7 @@ class User: id: str; logout_time: int
 db = database('/tmp/data.db')
 db.users = db.create(User, transform=True)
 
-logout_time = int(datetime.now(UTC).timestamp())
+logout_time = now()
 
 class Auth(OAuth):
     def get_auth(self, info, ident, session, state):
