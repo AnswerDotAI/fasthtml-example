@@ -39,7 +39,7 @@ def logout(session):
 @rt
 def home(auth): return P('Logged in!'), A('Log out', href='/logout')
 
-@app.get('/login')
+@rt
 def login(req): return Div(P("Not logged in"), A('Log in', href=oauth.login_link(req)))
 
 serve()
