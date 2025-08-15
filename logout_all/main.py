@@ -31,7 +31,7 @@ app,rt = fast_app()
 cli = GoogleAppClient(os.environ['GOOGLE_CLIENT_ID'], os.environ['GOOGLE_CLIENT_SECRET'])
 oauth = Auth(app, cli)
 
-@app.get('/logout')
+@rt
 def logout(session):
     if auth := session.pop('auth', None): db.users.upsert(id=auth, logout_time=now())
     return oauth.redir_login(session)
