@@ -10,7 +10,7 @@ def now(): return int(datetime.now(UTC).timestamp())
 @dataclass
 class User: id: str; logout_time: int
 db = database('/tmp/data.db')
-db.users = db.create(User, transform=True)
+users = db.create(User, transform=True)
 
 logout_time = now()
 
