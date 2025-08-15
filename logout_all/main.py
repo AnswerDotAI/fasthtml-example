@@ -27,7 +27,7 @@ class Auth(OAuth):
             return RedirectResponse('/login', status_code=419)
         return False
 
-app = FastHTML()
+app,rt = fast_app()
 cli = GoogleAppClient(os.environ['GOOGLE_CLIENT_ID'], os.environ['GOOGLE_CLIENT_SECRET'])
 oauth = Auth(app, cli)
 
