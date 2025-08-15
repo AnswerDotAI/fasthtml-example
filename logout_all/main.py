@@ -5,7 +5,7 @@ from fasthtml.oauth import GoogleAppClient, OAuth
 
 import os
 
-now = lambda: int(datetime.now(UTC).timestamp())
+def now(): return int(datetime.now(UTC).timestamp()) 
 
 @dataclass
 class User: id: str; logout_time: int
