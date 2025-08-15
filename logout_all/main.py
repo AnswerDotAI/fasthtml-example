@@ -36,7 +36,7 @@ def logout(session):
     if auth := session.pop('auth', None): db.users.upsert(id=auth, logout_time=now())
     return oauth.redir_login(session)
 
-@app.get('/')
+@rt
 def home(auth): return P('Logged in!'), A('Log out', href='/logout')
 
 @app.get('/login')
