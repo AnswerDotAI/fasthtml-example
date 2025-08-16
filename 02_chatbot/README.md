@@ -134,6 +134,10 @@ Using `Transfer-Encoding: chunked` is a way to send a response in chunks, which 
 We can use the [transfer-encoding-chunked](https://www.npmjs.com/package/htmx-ext-transfer-encoding-chunked) htmx extension to enable chunked transfer of the response. To do this, add the requisite headers by passing `exts='chunked-transfer'` to the FastHTML constructor, and then use the `hx_ext="chunked-transfer"` attribute in the form.
 
 ```python
+app = FastHTML(..., exts="chunked-transfer")
+```
+
+```python
 Form(hx_post=send, hx_target="#chatlist", hx_swap="beforeend", hx_ext="chunked-transfer", hx_disabled_elt="#msg-group")
 ```
 
