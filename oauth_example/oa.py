@@ -5,8 +5,7 @@ cli = GoogleAppClient.from_file('/Users/jhoward/git/_nbs/oauth-test/client_secre
 
 class Auth(OAuth):
     def get_auth(self, info, ident, session, state):
-        email = info.email or ''
-        if info.email_verified and email.split('@')[-1]=='answer.ai':
+        if info.hd == 'answer.ai':
             return RedirectResponse('/', status_code=303)
 
 app = FastHTML()
