@@ -3,19 +3,19 @@ from fasthtml.common import *
 app,rt,todos,Todo = fast_app(
     'data/todos.db',
     hdrs=[Style(':root { --pico-font-size: 100%; }')],
-    id=int, title=str, done=bool, pk='id')
+    id=int, task=str, done=bool, pk='id')
 
 id_curr = 'current-todo'
 def tid(id): return f'todo-{id}'
 
 @patch
 def __ft__(self:Todo):
-    show = AX(self.title, f'/todos/{self.id}', id_curr)
+    show = AX(self.task, f'/todos/{self.id}', id_curr)
     edit = AX('edit',     f'/edit/{self.id}' , id_curr)
     dt = ' ✅' if self.done else ''
     return Li(show, dt, ' | ', edit, id=tid(self.id))
 
-def mk_input(**kw): return Input(id="new-title", name="title", placeholder="New Todo", required=True, **kw)
+def mk_input(**kw): return Input(id="new-task", name="task", placeholder="New Todo", required=True, **kw)
 
 @rt("/")
 def get():
@@ -36,7 +36,7 @@ def post(todo:Todo): return todos.insert(todo), mk_input(hx_swap_oob='true')
 
 @rt("/edit/{id}")
 def get(id:int):
-    res = Form(Group(Input(id="title"), Button("Save")),
+    res = Form(Group(Input(id="task"), Button("Save")),
         Hidden(id="id"), CheckboxX(id="done", label='Done'),
         hx_put="/", hx_swap="outerHTML", target_id=tid(id), id="edit")
     return fill_form(res, todos.get(id))
@@ -49,6 +49,6 @@ def get(id:int):
     todo = todos.get(id)
     btn = Button('delete', hx_delete=f'/todos/{todo.id}',
                  target_id=tid(todo.id), hx_swap="outerHTML")
-    return Div(Div(todo.title), btn)
+    return Div(Div(todo.task), btn)
 
 serve()
