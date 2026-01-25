@@ -1,4 +1,4 @@
-from fasthtml import FastHTML, picolink
+from fasthtml import FastHTML
 from fasthtml.common import *
 import os, uvicorn
 from starlette.responses import FileResponse
