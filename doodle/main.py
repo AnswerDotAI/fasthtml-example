@@ -18,8 +18,8 @@ def home():
         Legend("Extra Inputs"),
         P(Label("Negative Prompt", for_="example-input-text"), Br(), Input(id="example-input-text", type_="text", placeholder="Enter some text here")),
         P(Label("Extra long description", for_="example-textarea"), Br(),Textarea(id="example-textarea", rows="3")),
-        P(Label("Add upscaling?", for_="ch1"), Br(), Checkbox("No", id="ch1")),
-        P(Label("Enable Warp Drive?", for_="ch2"), Br(),Checkbox(id="ch2")),
+        P(Label("Add upscaling?", for_="ch1"), Br(), CheckboxX("No", id="ch1")),
+        P(Label("Enable Warp Drive?", for_="ch2"), Br(),CheckboxX(id="ch2")),
     )
     return Title('Image Generation Demo'), Body(H1('Magic Image Generation'), add, gen_list, f, 
                                                 cls='doodle', style=body_style)
