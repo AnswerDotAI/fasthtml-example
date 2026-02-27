@@ -1,11 +1,11 @@
-from fastcore.parallel import threaded
-from fasthtml.common import *
-import uuid, os, uvicorn, requests, replicate
+import requests, uuid
 from PIL import Image
+from fasthtml.common import *
+from replicate import Client
 
 # Replicate setup (for generating images)
 replicate_api_token = os.environ['REPLICATE_API_KEY']
-client = replicate.Client(api_token=replicate_api_token)
+client = Client(api_token=replicate_api_token)
 
 # gens database for storing generated image details
 tables = database('gens.db').t

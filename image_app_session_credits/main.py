@@ -1,12 +1,11 @@
-from fastcore.parallel import threaded
-from fasthtml.common import *
-import uuid, os, uvicorn, requests, replicate, stripe
+import requests, uuid, stripe
 from PIL import Image
-from starlette.responses import RedirectResponse
+from fasthtml.common import *
+from replicate import Client
 
 # Replicate setup (for generating images)
 replicate_api_token = os.environ['REPLICATE_API_KEY']
-client = replicate.Client(api_token=replicate_api_token)
+client = Client(api_token=replicate_api_token)
 
 # Stripe (for payments)
 stripe.api_key = os.environ["STRIPE_KEY"]
