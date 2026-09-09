@@ -6,7 +6,7 @@ def extract_names(s): return [o for _,o,_,_ in Formatter().parse(s) if o is not 
 
 class RsJs:
     def __init__(self, nm): self.nm = nm
-    def ref(self, k): return f'$("[{self.data(k)}]", el)'
+    def ref(self, k): return f'me("[{self.data(k)}]", el)'
 
     def expand(self, s):
         d = {o:self.ref(o) for o in extract_names(s)}
