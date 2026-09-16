@@ -3,7 +3,7 @@ from fasthtml.pico import *
 import asyncio
 import sys
 
-if __name__ == "__main__": sys.exit("Run this app with `uvicorn main:app`")
+if __name__ == "__main__": sys.exit("Run this app with `uvicorn main:app --reload`")
 
 css = Style('''
     body, html { height: 100%; margin: 0; }
