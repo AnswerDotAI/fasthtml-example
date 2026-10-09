@@ -1,5 +1,6 @@
 from fasthtml.common import *
 from fasthtml.oauth import GitHubAppClient, redir_url
+from fastlite import *
 
 # # Set up a database
 db = database('data/user_counts.db')

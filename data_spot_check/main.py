@@ -1,5 +1,6 @@
 from fasthtml.common import *
 from fasthtml.pico import *
+from fastlite import *
 import uuid, os, uvicorn, random, datasets
 import pandas as pd
 from starlette.responses import RedirectResponse, FileResponse  

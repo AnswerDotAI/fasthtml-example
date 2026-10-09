@@ -1,4 +1,5 @@
 from fasthtml.common import *
+from fastlite import *
 from collections import OrderedDict, deque
 import threading, time, signal, sys, pathlib, random, uuid, base64
 from PIL import Image as PILImage

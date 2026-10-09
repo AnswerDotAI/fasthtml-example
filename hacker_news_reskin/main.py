@@ -1,4 +1,5 @@
 from fasthtml.common import *
+from fastlite import *
 import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
