@@ -1,5 +1,6 @@
 from fasthtml.common import *
 from fasthtml.pico import *
+from fastlite import *
 from fasthtml_hf import setup_hf_backup
 
 def tid(id): return f'todo-{id}'

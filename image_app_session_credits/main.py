@@ -1,6 +1,7 @@
 from fastcore.parallel import threaded
 from fasthtml.common import *
 from fasthtml.pico import *
+from fastlite import *
 import uuid, os, uvicorn, requests, replicate, stripe
 from PIL import Image
 from starlette.responses import RedirectResponse
