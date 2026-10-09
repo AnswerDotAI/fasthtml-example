@@ -551,7 +551,7 @@ def static(fname: str, ext: str):
 
 ## API clients ##
 import google.generativeai as genai
-from openai import OpenAI
+from openai import AzureOpenAI, OpenAI
 import anthropic
 
 genai.configure(api_key=os.environ.get("G_API_KEY"))
