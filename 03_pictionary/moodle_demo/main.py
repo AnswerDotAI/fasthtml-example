@@ -1,10 +1,9 @@
 from fasthtml.common import *
 from fastlite import *
-from collections import OrderedDict, deque
-import threading, time, signal, sys, pathlib, random, uuid, base64
+from collections import OrderedDict
+import threading, time, sys, pathlib, random, uuid, base64
 from PIL import Image as PILImage
 from PIL import ImageDraw, ImageFont
-from dataclasses import dataclass
 import pandas as pd
 
 # Settings
@@ -552,7 +551,7 @@ def static(fname: str, ext: str):
 
 ## API clients ##
 import google.generativeai as genai
-from openai import AzureOpenAI, OpenAI
+from openai import OpenAI
 import anthropic
 
 genai.configure(api_key=os.environ.get("G_API_KEY"))

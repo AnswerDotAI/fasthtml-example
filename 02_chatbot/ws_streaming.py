@@ -1,7 +1,6 @@
 from fasthtml.common import *
 from fasthtml.pico import *
 from claudette import *
-import asyncio
 
 # Set up the app, including daisyui and tailwind for the chat component
 tlink = Script(src="https://cdn.tailwindcss.com"),

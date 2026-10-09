@@ -1,5 +1,4 @@
 from fasthtml.common import *
-from pathlib import Path
 
 hdrs = [Link(href="/static/styles.css", rel="stylesheet")]
 app,rt = fast_app(hdrs=hdrs)

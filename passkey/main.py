@@ -1,11 +1,11 @@
 from fasthtml.common import *
 from webauthn import (generate_registration_options, options_to_json, verify_registration_response,
     generate_authentication_options, verify_authentication_response)
-from webauthn.helpers.structs import (RegistrationCredential, AuthenticationCredential, AuthenticatorSelectionCriteria,
+from webauthn.helpers.structs import (AuthenticatorSelectionCriteria,
     ResidentKeyRequirement, UserVerificationRequirement)
 from webauthn.helpers import base64url_to_bytes, bytes_to_base64url
 from base64 import urlsafe_b64decode, urlsafe_b64encode
-from json import dumps,loads
+from json import loads
 
 app,rt = fast_app()
 

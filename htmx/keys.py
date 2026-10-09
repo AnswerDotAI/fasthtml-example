@@ -1,8 +1,5 @@
 from fasthtml.common import *
-from asyncio import sleep
-from random import randint
 from datetime import datetime
-import secrets
 
 app,rt = fast_app()
 
