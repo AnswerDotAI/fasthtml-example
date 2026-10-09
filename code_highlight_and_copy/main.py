@@ -1,5 +1,6 @@
 from fasthtml.common import *
 from fasthtml.pico import *
+import uvicorn
 
 app = FastHTML(hdrs=(picolink, MarkdownJS(), HighlightJS()))
 
