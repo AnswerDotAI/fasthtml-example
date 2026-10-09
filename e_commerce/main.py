@@ -1,7 +1,7 @@
 from fastcore.basics import patch
 from fasthtml.common import *
 from fasthtml.oauth import GoogleAppClient, OAuth
-from fastlite import database
+from fastlite import database, Database
 from faststripe.core import StripeApi
 
 import os, stripe

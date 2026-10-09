@@ -1,9 +1,10 @@
 from fasthtml.common import *
+from fastlite import *
 import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
 from openai import OpenAI
-import os, openai, time
+import os, time
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 

@@ -1,9 +1,9 @@
 from fasthtml.common import *
-from collections import OrderedDict, deque
-import threading, time, signal, sys, pathlib, random, uuid, base64
+from fastlite import *
+from collections import OrderedDict
+import threading, time, sys, pathlib, random, uuid, base64
 from PIL import Image as PILImage
 from PIL import ImageDraw, ImageFont
-from dataclasses import dataclass
 import pandas as pd
 
 # Settings

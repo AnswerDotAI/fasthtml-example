@@ -1,5 +1,4 @@
 from fasthtml.common import *
-from uuid import uuid4
 from string import Formatter
 
 def extract_names(s): return [o for _,o,_,_ in Formatter().parse(s) if o is not None]
