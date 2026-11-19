@@ -23,7 +23,8 @@ def home():
             hx_get="/more-cards",
             hx_trigger="intersect once",
             hx_swap="afterend",
-            hx_target="#card-container"
+            hx_target="#card-container",
+            style="height: 1px;"
         ),
         style="max-width: 800px; margin: 0 auto;"
     )
