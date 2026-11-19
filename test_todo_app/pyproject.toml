@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "test-todo-app"
+version = "0.1.0"
+description = "Test a FastHTML app"
+authors = ["Philip Nuzhnyi <philip.nuzhnyy@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-fasthtml = "^0.6.0"
+pytest = "^8.3.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
