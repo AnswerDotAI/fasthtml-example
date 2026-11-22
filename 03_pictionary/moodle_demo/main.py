@@ -728,11 +728,8 @@ def stop_background_tasks():
     for task in tasks: task.join()
     print("All tasks stopped")
 
-@app.on_event("startup")
-async def startup_event(): start_background_tasks()
-
-@app.on_event("shutdown")
-async def shutdown_event(): stop_background_tasks()
+app.startup(start_background_tasks)
+app.shutdown(stop_background_tasks)
 
 if __name__ == "__main__":
     try: serve()

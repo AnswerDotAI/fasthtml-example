@@ -72,14 +72,13 @@ async def on_disconnect(send): await update_players()
 @app.ws('/gol', conn=on_connect, disconn=on_disconnect)
 async def ws(msg:str, send): pass
 
+@app.startup(bg=True)
 async def background_task():
     while True:
         if game_state['running'] and len(player_queue) > 0:
             game_state['grid'] = update_grid(game_state['grid'])
             await update_players()
         await asyncio.sleep(1.0)
-
-background_task_coroutine = asyncio.create_task(background_task())
 
 @rt('/update')
 async def put(x: int, y: int):

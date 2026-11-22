@@ -130,6 +130,7 @@ async def process_article(url, title, hn_comments):
 
 
 # In a thread we fetch the latest HN stories every hour
+@app.startup(bg=True)
 async def update_summaries():
     while True:
         try:
@@ -143,11 +144,6 @@ async def update_summaries():
                 story['url'], story['title'],
                 f"https://news.ycombinator.com/item?id={story['id']}")
         await asyncio.sleep(3600)  # Update every hour
-
-
-@app.on_event("startup")
-async def start_update_task():
-    asyncio.create_task(update_summaries())
 
 
 serve()
