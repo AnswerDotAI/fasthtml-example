@@ -49,7 +49,7 @@ def put(todo: Todo): return todos.upsert(todo), clear(id_curr)
 def get(id:int):
     todo = todos.get(id)
     btn = Button('delete', hx_delete=f'/todos/{todo.id}',
-                 target_id=tid(todo.id), hx_swap="outerHTML")
+                 target_id=tid(todo.id), hx_swap="outerHTML swapEmpty:true")
     return Div(Div(todo.task), btn)
 
 serve()

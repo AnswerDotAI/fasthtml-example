@@ -35,7 +35,7 @@ def get():
           menu('house-door', 'Dashboard', '/users'),
           menu('graph-up', 'Analytics', '/rev'),
           menu('gear', 'Settings', '/proj'),
-        ), hx_target='#metrics', cls='w-64 bg-white border-r border-gray-200 p-4 overflow-y-auto'),
+        ), hx_target_inherited='#metrics', cls='w-64 bg-white border-r border-gray-200 p-4 overflow-y-auto'),
       Main(
         breadcrumbs('Home', 'Dashboard'),
         H1('Welcome to Your Dashboard', cls='text-2xl font-bold mt-4 mb-2'),

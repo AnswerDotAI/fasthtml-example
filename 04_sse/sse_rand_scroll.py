@@ -2,15 +2,13 @@ import random
 from asyncio import sleep
 from fasthtml.common import *
 
-hdrs=(Script(src="https://unpkg.com/htmx-ext-sse@2.2.1/sse.js"),)
-app,rt = fast_app(hdrs=hdrs)
+app,rt = fast_app(exts='sse4')
 
 @rt
 def index():
     return Titled("SSE Random Number Generator",
         P("Generate pairs of random numbers, as the list grows scroll downwards."),
-        Div(hx_ext="sse", sse_connect="/number-stream",
-            hx_swap="beforeend show:bottom", sse_swap="message"))
+        Div(hx_sse_connect="/number-stream", hx_swap="beforeend show:bottom"))
 
 shutdown_event = signal_shutdown()
 async def number_generator():

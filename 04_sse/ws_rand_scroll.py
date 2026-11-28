@@ -16,7 +16,7 @@ async def bg():
 @rt
 def index():
     return Titled("Random number broadcast station",
-        Div(hx_ext='ws', ws_connect='/ws'),
+        Div(hx_ws_connect='/ws'),
         P(id='dest')
     )
 

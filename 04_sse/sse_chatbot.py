@@ -11,8 +11,7 @@ dlink = Link(
     rel="stylesheet",
     href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css",
 )
-sselink = Script(src="https://unpkg.com/htmx-ext-sse@2.2.1/sse.js")
-app = FastHTML(hdrs=(tlink, dlink, picolink, sselink), live=True)
+app = FastHTML(hdrs=(tlink, dlink, picolink), exts='sse4', live=True)
 
 # Set up a chat model client and list of messages (https://claudette.answer.ai/)
 cli = Client(models[-1])
@@ -30,7 +29,7 @@ async def message_generator():
     r = cli(messages[:-1], sp=sp, stream=True)
     for chunk in r:
         messages[-1]["content"] += chunk
-        yield f"event: message\ndata: {chunk}\n\n"
+        yield f"data: {chunk}\n\n"
         await asyncio.sleep(0.5)
     yield f"event: close\ndata: \n\n"
 
@@ -105,7 +104,7 @@ def send_message(msg: str):
     assistant_msg = Div(
         ChatMessage(
             len(messages) - 1,
-            hx_ext="sse", sse_connect="/get-message", sse_swap="message", sse_close="close",
+            hx_sse_connect="/get-message", hx_sse_close="close",
             hx_swap="beforeend")
     )
     return user_msg, assistant_msg, ChatInput()

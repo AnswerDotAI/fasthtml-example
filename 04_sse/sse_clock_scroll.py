@@ -2,15 +2,13 @@ from asyncio import sleep
 from datetime import datetime
 from fasthtml.common import *
 
-hdrs=(Script(src="https://unpkg.com/htmx-ext-sse@2.2.1/sse.js"),)
-app,rt = fast_app(hdrs=hdrs)
+app,rt = fast_app(exts='sse4')
 
 @rt
 def index():
     return Titled("SSE Clock",
         P("Display each second. As the display grows scroll downwards."),
-        Div(hx_ext="sse", sse_connect="/time-sender",
-            hx_swap="beforeend show:bottom", sse_swap="message")
+        Div(hx_sse_connect="/time-sender", hx_swap="beforeend show:bottom")
     )
 
 event = signal_shutdown()

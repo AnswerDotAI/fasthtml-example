@@ -11,7 +11,7 @@ def index():
         P("Text to Update", id="dest"))
 
 @rt
-async def handle(hx_trigger:str): return Div(f"trigger: {hx_trigger}")
+async def handle(hx_source:str): return Div(f"trigger: {hx_source}")
 
 serve()
 

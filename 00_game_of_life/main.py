@@ -17,8 +17,7 @@ css = Style('''
     .dead { background-color: white; }
 ''')
 gridlink = Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css")
-htmx_ws = Script(src="https://unpkg.com/htmx-ext-ws@2.0.0/ws.js")
-app = FastHTML(hdrs=(picolink, gridlink, css, htmx_ws))
+app = FastHTML(hdrs=(picolink, gridlink, css), exts='ws')
 rt = app.route
 
 game_state = {'running': False, 'grid': [[0 for _ in range(20)] for _ in range(20)]}
@@ -54,7 +53,7 @@ def Home():
     run_btn = Button('Run', id='run', cls='col-xs-2', hx_put='/run', hx_target='#gol', hx_swap='none')
     pause_btn = Button('Pause', id='pause', cls='col-xs-2', hx_put='/pause', hx_target='#gol', hx_swap='none')
     reset_btn = Button('Reset', id='reset', cls='col-xs-2', hx_put='/reset', hx_target='#gol', hx_swap='none')
-    main = Main(gol, Div(run_btn, pause_btn, reset_btn, cls='row center-xs'), hx_ext="ws", ws_connect="/gol")
+    main = Main(gol, Div(run_btn, pause_btn, reset_btn, cls='row center-xs'), hx_ws_connect="/gol")
     footer = Footer(P('Made by Nathan Cooper. Check out the code', AX('here', href='https://github.com/AnswerDotAI/fasthtml-example/tree/main/game_of_life', target='_blank')))
     return Title('Game of Life'), main, footer
 
@@ -64,7 +63,7 @@ def get(): return Home()
 player_queue = []
 async def update_players():
     for i, player in enumerate(player_queue):
-        try: await player(Grid())
+        try: await player(Grid()(hx_swap_oob='true'))
         except: player_queue.pop(i)
 async def on_connect(send): player_queue.append(send)
 async def on_disconnect(send): await update_players()

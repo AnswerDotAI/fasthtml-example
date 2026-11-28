@@ -123,7 +123,7 @@ def retr(id:int):
     todo = todos[id]
     btn = Button('delete',
                  name='id', value=id, target_id=f'todo-{todo.id}',
-                 hx_post=remove, hx_swap="outerHTML")
+                 hx_post=remove, hx_swap="outerHTML swapEmpty:true")
     return Div(H2(todo.title), Div(todo.details, cls="markdown"), btn)
 
 serve()

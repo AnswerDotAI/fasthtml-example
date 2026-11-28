@@ -7,13 +7,12 @@ try:
 except ImportError:
     raise ImportError("Please install sse-starlette with 'pip install sse-starlette'")
 
-sselink = Script(src="https://unpkg.com/htmx-ext-sse@2.2.1/sse.js")
-app, rt = fast_app(hdrs=(sselink,))
+app, rt = fast_app(exts='sse4')
 
 @rt("/")
 def get():
     return Titled("SSE Clock",
-            Span(hx_ext="sse", sse_connect="/time-sender", sse_swap="TimeUpdateEvent")(
+            Span(hx_sse_connect="/time-sender")(
                 P("XX:XX")
             )
         )
@@ -27,8 +26,7 @@ async def time_generator():
             # Maybe we can patch EventSourceResponse to run to_xml automatically if FT
             # components are detected in the data key, so we don't have to do it here
             # Note: For data, converts carriage returns to extra `data:` lines in the response
-            data=to_xml(P(datetime.now().strftime('%H:%M:%S'))),
-            event="TimeUpdateEvent")
+            data=to_xml(P(datetime.now().strftime('%H:%M:%S'))))
         await asyncio.sleep(1)
 
 @rt("/time-sender")

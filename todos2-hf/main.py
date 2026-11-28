@@ -58,7 +58,7 @@ def put(todo: Todo): return todos.upsert(todo), clr_details()
 def get(id:int):
     todo = todos[id]
     btn = Button('delete', hx_delete=f'/todos/{todo.id}',
-                 target_id=tid(todo.id), hx_swap="outerHTML")
+                 target_id=tid(todo.id), hx_swap="outerHTML swapEmpty:true")
     return Div(Div(todo.title), btn)
 
 setup_hf_backup(app)
